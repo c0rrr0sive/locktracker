@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrizePicks - My Entries (Mock Test Page)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(180deg, #1a0a2e 0%, #16082a 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .header {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        .test-notice {
+            background: #ff6b35;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.05);
+            padding: 6px;
+            border-radius: 12px;
+        }
+        .tab {
+            flex: 1;
+            padding: 12px 20px;
+            background: transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            text-align: center;
+            color: #aaa;
+        }
+        .tab.active {
+            background: #7c3aed;
+            color: #fff;
+        }
+        .entry-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: rgba(255,255,255,0.03);
+        }
+        .entry-type {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .legs-badge {
+            background: #7c3aed;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .entry-amount {
+            font-size: 14px;
+            color: #aaa;
+        }
+        .result-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .result-badge.won {
+            background: #10b981;
+            color: #fff;
+        }
+        .result-badge.lost {
+            background: #ef4444;
+            color: #fff;
+        }
+        .result-badge.pending {
+            background: #f59e0b;
+            color: #000;
+        }
+        .entry-body {
+            padding: 16px;
+        }
+        .pick-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+        .pick-item:last-child {
+            margin-bottom: 0;
+        }
+        .player-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 12px;
+            font-size: 14px;
+        }
+        .pick-details {
+            flex: 1;
+        }
+        .player-name {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 2px;
+        }
+        .stat-type {
+            font-size: 13px;
+            color: #aaa;
+        }
+        .pick-line {
+            text-align: right;
+        }
+        .line-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #7c3aed;
+        }
+        .pick-direction {
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            margin-top: 4px;
+            display: inline-block;
+        }
+        .pick-direction.over {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+        .pick-direction.under {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        .pick-status {
+            margin-left: 12px;
+            font-size: 18px;
+        }
+        .entry-footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 16px;
+            background: rgba(255,255,255,0.03);
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .footer-item {
+            text-align: center;
+        }
+        .footer-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .footer-value {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .footer-value.payout {
+            color: #10b981;
+        }
+        .footer-value.payout.lost {
+            color: #ef4444;
+        }
+        .sport-tag {
+            font-size: 11px;
+            padding: 2px 8px;
+            background: rgba(124, 58, 237, 0.3);
+            border-radius: 4px;
+            color: #a855f7;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-notice">
+        TEST PAGE - This is a mock PrizePicks page for testing the Bet Tracker extension
+    </div>
+
+    <div class="header">
+        <h1>PrizePicks</h1>
+        <p>My Entries - Settled</p>
+    </div>
+
+    <div class="tabs">
+        <div class="tab">Active</div>
+        <div class="tab active">Settled</div>
+        <div class="tab">Upcoming</div>
+    </div>
+
+    <!-- Entry 1: 3-Pick NBA Entry - WON -->
+    <div class="entry-card won">
+        <div class="entry-header">
+            <div class="entry-type">
+                <span class="legs-badge">3 PICKS</span>
+                <span class="entry-amount">$20 Entry</span>
+                <span class="sport-tag">NBA</span>
+            </div>
+            <span class="result-badge won">WON</span>
+        </div>
+        <div class="entry-body">
+            <div class="pick-item">
+                <div class="player-avatar">SC</div>
+                <div class="pick-details">
+                    <div class="player-name">Stephen Curry</div>
+                    <div class="stat-type">Points</div>
+                </div>
+                <div class="pick-line">
+                    <div class="line-value">28.5</div>
+                    <div class="pick-direction over">OVER</div>
+                </div>
+                <div class="pick-status">✓</div>
+            </div>
+            <div class="pick-item">
+                <div class="player-avatar">LJ</div>
+                <div class="pick-details">
+                    <div class="player-name">LeBron James</div>
+                    <div class="stat-type">Rebounds</div>
+                </div>
+                <div class="pick-line">
+                    <div class="line-value">7.5</div>
+                    <div class="pick-direction over">OVER</div>
+                </div>
+                <div class="pick-status">✓</div>
+            </div>
+            <div class="pick-item">
+                <div class="player-avatar">JT</div>
+                <div class="pick-details">
+                    <div class="player-name">Jayson Tatum</div>
+                    <div class="stat-type">Assists</div>
+                </div>
+                <div class="pick-line">
+                    <div class="line-value">4.5</div>
+                    <div class="pick-direction over">OVER</div>
+                </div>
+                <div class="pick-status">✓</div>
+            </div>
+        </div>
+        <div class="entry-footer">
+            <div class="footer-item">
+                <div class="footer-label">Entry</div>
+                <div class="footer-value">$20.00</div>
+            </div>
+            <div class="footer-item">
+                <div class="footer-label">Multiplier</div>
+                <div class="footer-value">5x</div>
+            </div>
+            <div class="footer-item">
+                <div class="footer-label">Payout</div>
+                <div class="footer-value payout">$100.00</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Entry 2: 4-Pick NFL Entry - LOST -->
+    <div class="entry-card lost">
+        <div class="entry-header">
+            <div class="entry-type">
+                <span class="legs-badge">4 PICKS</span>
+                <span class="entry-amount">$15 Entry</span>
+                <span class="sport-tag">NFL</span>
+            </div>
+            <span class="result-badge lost">LOST</span>
+        </div>
+        <div class="entry-body">
+            <div class="pick-item">
+                <div class="player-avatar">PM</div>
+                <div class="pick-details">
+                    <div class="player-name">Patrick Mahomes</div>
+                    <div class="stat-type">Passing Yards</div>
+                </div>
+                <div class="pick-line">
+                    <div class="line-value">285.5</div>
+                    <div class="pick-direction over">OVER</div>
+                </div>
+                <div class="pick-status">✓</div>
+            </div>
+            <div class="pick-item">
+                <div class="player-avatar">TK</div>
+                <div class="pick-details">
+                    <div class="player-name">Travis Kelce</div>
+                    <div class="stat-type">Receiving Yards</div>
+                </div>
+                <div class="pick-line">
+                    <div class="line-value">72.5</div>
+                    <div class="pick-direction over">OVER</div>
+                </div>
+                <div class="pick-status">✗</div>
+            </div>
+            <div class="pick-item">
+                <div class="player-avatar">JH</div>
+                <div class="pick-details">
+                    <div class="player-name">Jalen Hurts</div>
+                    <div class="stat-type">Rushing Yards</div>
+                </div>
+                <div class="pick-line">
+                    <div class="line-value">35.5</div>
+                    <div class="pick-direction over">OVER</div>
+                </div>
+                <div class="pick-status">✓</div>
+            </div>
+            <div class="pick-item">
+                <div class="player-avatar">AJB</div>
+                <div class="pick-details">
+                    <div class="player-name">AJ Brown</div>
+                    <div class="stat-type">Receptions</div>
+                </div>
+                <div class="pick-line">
+                    <div class="line-value">5.5</div>
+                    <div class="pick-direction under">UNDER</div>
+                </div>
+                <div class="pick-status">✗</div>
+            </div>
+        </div>
+        <div class="entry-footer">
+            <div class="footer-item">
+                <div class="footer-label">Entry</div>
+                <div class="footer-value">$15.00</div>
+            </div>
+            <div class="footer-item">
+                <div class="footer-label">Multiplier</div>
+                <div class="footer-value">10x</div>
+            </div>
+            <div class="footer-item">
+                <div class="footer-label">Payout</div>
+                <div class="footer-value payout lost">$0.00</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Entry 3: 2-Pick MLB Entry - WON -->
+    <div class="entry-card won">
+        <div class="entry-header">
+            <div class="entry-type">
+                <span class="legs-badge">2 PICKS</span>
+                <span class="entry-amount">$25 Entry</span>
+                <span class="sport-tag">MLB</span>
+            </div>
+            <span class="result-badge won">WON</span>
+        </div>
+        <div class="entry-body">
+            <div class="pick-item">
+                <div class="player-avatar">SO</div>
+                <div class="pick-details">
+                    <div class="player-name">Shohei Ohtani</div>
+                    <div class="stat-type">Total Bases</div>
+                </div>
+                <div class="pick-line">
+                    <div class="line-value">2.5</div>
+                    <div class="pick-direction over">OVER</div>
+                </div>
+                <div class="pick-status">✓</div>
+            </div>
+            <div class="pick-item">
+                <div class="player-avatar">AJ</div>
+                <div class="pick-details">
+                    <div class="player-name">Aaron Judge</div>
+                    <div class="stat-type">Hits + Runs + RBIs</div>
+                </div>
+                <div class="pick-line">
+                    <div class="line-value">3.5</div>
+                    <div class="pick-direction over">OVER</div>
+                </div>
+                <div class="pick-status">✓</div>
+            </div>
+        </div>
+        <div class="entry-footer">
+            <div class="footer-item">
+                <div class="footer-label">Entry</div>
+                <div class="footer-value">$25.00</div>
+            </div>
+            <div class="footer-item">
+                <div class="footer-label">Multiplier</div>
+                <div class="footer-value">3x</div>
+            </div>
+            <div class="footer-item">
+                <div class="footer-label">Payout</div>
+                <div class="footer-value payout">$75.00</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Entry 4: 5-Pick Mixed Entry - WON (Big payout!) -->
+    <div class="entry-card won">
+        <div class="entry-header">
+            <div class="entry-type">
+                <span class="legs-badge">5 PICKS</span>
+                <span class="entry-amount">$10 Entry</span>
+                <span class="sport-tag">MIXED</span>
+            </div>
+            <span class="result-badge won">WON</span>
+        </div>
+        <div class="entry-body">
+            <div class="pick-item">
+                <div class="player-avatar">LD</div>
+                <div class="pick-details">
+                    <div class="player-name">Luka Doncic</div>
+                    <div class="stat-type">Points + Assists - NBA</div>
+                </div>
+                <div class="pick-line">
+                    <div class="line-value">42.5</div>
+                    <div class="pick-direction over">OVER</div>
+                </div>
+                <div class="pick-status">✓</div>
+            </div>
+            <div class="pick-item">
+                <div class="player-avatar">JA</div>
+                <div class="pick-details">
+                    <div class="player-name">Josh Allen</div>
+                    <div class="stat-type">Pass TDs - NFL</div>
+                </div>
+                <div class="pick-line">
+                    <div class="line-value">2.5</div>
+                    <div class="pick-direction over">OVER</div>
+                </div>
+                <div class="pick-status">✓</div>
+            </div>
+            <div class="pick-item">
+                <div class="player-avatar">CM</div>
+                <div class="pick-details">
+                    <div class="player-name">Connor McDavid</div>
+                    <div class="stat-type">Points - NHL</div>
+                </div>
+                <div class="pick-line">
+                    <div class="line-value">1.5</div>
+                    <div class="pick-direction over">OVER</div>
+                </div>
+                <div class="pick-status">✓</div>
+            </div>
+            <div class="pick-item">
+                <div class="player-avatar">MB</div>
+                <div class="pick-details">
+                    <div class="player-name">Mookie Betts</div>
+                    <div class="stat-type">Total Bases - MLB</div>
+                </div>
+                <div class="pick-line">
+                    <div class="line-value">1.5</div>
+                    <div class="pick-direction over">OVER</div>
+                </div>
+                <div class="pick-status">✓</div>
+            </div>
+            <div class="pick-item">
+                <div class="player-avatar">EH</div>
+                <div class="pick-details">
+                    <div class="player-name">Erling Haaland</div>
+                    <div class="stat-type">Shots on Target - Soccer</div>
+                </div>
+                <div class="pick-line">
+                    <div class="line-value">2.5</div>
+                    <div class="pick-direction over">OVER</div>
+                </div>
+                <div class="pick-status">✓</div>
+            </div>
+        </div>
+        <div class="entry-footer">
+            <div class="footer-item">
+                <div class="footer-label">Entry</div>
+                <div class="footer-value">$10.00</div>
+            </div>
+            <div class="footer-item">
+                <div class="footer-label">Multiplier</div>
+                <div class="footer-value">20x</div>
+            </div>
+            <div class="footer-item">
+                <div class="footer-label">Payout</div>
+                <div class="footer-value payout">$200.00</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Entry 5: 3-Pick Entry - LOST -->
+    <div class="entry-card lost">
+        <div class="entry-header">
+            <div class="entry-type">
+                <span class="legs-badge">3 PICKS</span>
+                <span class="entry-amount">$30 Entry</span>
+                <span class="sport-tag">NBA</span>
+            </div>
+            <span class="result-badge lost">LOST</span>
+        </div>
+        <div class="entry-body">
+            <div class="pick-item">
+                <div class="player-avatar">NJ</div>
+                <div class="pick-details">
+                    <div class="player-name">Nikola Jokic</div>
+                    <div class="stat-type">Points</div>
+                </div>
+                <div class="pick-line">
+                    <div class="line-value">26.5</div>
+                    <div class="pick-direction under">UNDER</div>
+                </div>
+                <div class="pick-status">✓</div>
+            </div>
+            <div class="pick-item">
+                <div class="player-avatar">KD</div>
+                <div class="pick-details">
+                    <div class="player-name">Kevin Durant</div>
+                    <div class="stat-type">Points</div>
+                </div>
+                <div class="pick-line">
+                    <div class="line-value">29.5</div>
+                    <div class="pick-direction over">OVER</div>
+                </div>
+                <div class="pick-status">✗</div>
+            </div>
+            <div class="pick-item">
+                <div class="player-avatar">AG</div>
+                <div class="pick-details">
+                    <div class="player-name">Anthony Edwards</div>
+                    <div class="stat-type">Points + Rebounds + Assists</div>
+                </div>
+                <div class="pick-line">
+                    <div class="line-value">35.5</div>
+                    <div class="pick-direction over">OVER</div>
+                </div>
+                <div class="pick-status">✓</div>
+            </div>
+        </div>
+        <div class="entry-footer">
+            <div class="footer-item">
+                <div class="footer-label">Entry</div>
+                <div class="footer-value">$30.00</div>
+            </div>
+            <div class="footer-item">
+                <div class="footer-label">Multiplier</div>
+                <div class="footer-value">5x</div>
+            </div>
+            <div class="footer-item">
+                <div class="footer-label">Payout</div>
+                <div class="footer-value payout lost">$0.00</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Entry 6: 2-Pick Entry - PENDING -->
+    <div class="entry-card pending">
+        <div class="entry-header">
+            <div class="entry-type">
+                <span class="legs-badge">2 PICKS</span>
+                <span class="entry-amount">$50 Entry</span>
+                <span class="sport-tag">NBA</span>
+            </div>
+            <span class="result-badge pending">LIVE</span>
+        </div>
+        <div class="entry-body">
+            <div class="pick-item">
+                <div class="player-avatar">JB</div>
+                <div class="pick-details">
+                    <div class="player-name">Jimmy Butler</div>
+                    <div class="stat-type">Points</div>
+                </div>
+                <div class="pick-line">
+                    <div class="line-value">22.5</div>
+                    <div class="pick-direction over">OVER</div>
+                </div>
+                <div class="pick-status">⏳</div>
+            </div>
+            <div class="pick-item">
+                <div class="player-avatar">BA</div>
+                <div class="pick-details">
+                    <div class="player-name">Bam Adebayo</div>
+                    <div class="stat-type">Rebounds</div>
+                </div>
+                <div class="pick-line">
+                    <div class="line-value">10.5</div>
+                    <div class="pick-direction over">OVER</div>
+                </div>
+                <div class="pick-status">⏳</div>
+            </div>
+        </div>
+        <div class="entry-footer">
+            <div class="footer-item">
+                <div class="footer-label">Entry</div>
+                <div class="footer-value">$50.00</div>
+            </div>
+            <div class="footer-item">
+                <div class="footer-label">Multiplier</div>
+                <div class="footer-value">3x</div>
+            </div>
+            <div class="footer-item">
+                <div class="footer-label">Potential</div>
+                <div class="footer-value payout">$150.00</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        console.log('Mock PrizePicks page loaded - ready for extension testing');
+        console.log('This page contains 6 test entries with various sports and results');
+    </script>
+</body>
+</html>

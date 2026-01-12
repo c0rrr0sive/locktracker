@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LockTracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="header-top">
+                <div>
+                    <h1>LockTracker</h1>
+                    <p class="subtitle">Track your bets. Know your edge.</p>
+                </div>
+                <div class="user-info">
+                    <span class="user-email">{{ user.email }}</span>
+                    <a href="{{ url_for('logout') }}" class="btn btn-logout">Logout</a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats Dashboard -->
+        <section class="stats-dashboard">
+            <div class="stat-card main-stat {{ 'positive' if stats.total_profit >= 0 else 'negative' }}">
+                <span class="stat-value">${{ "%.2f"|format(stats.total_profit) }}</span>
+                <span class="stat-label">Total Profit</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value">{{ stats.win_rate }}%</span>
+                <span class="stat-label">Win Rate</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value">{{ stats.roi }}%</span>
+                <span class="stat-label">ROI</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value">{{ stats.wins }}-{{ stats.losses }}</span>
+                <span class="stat-label">Record</span>
+            </div>
+        </section>
+
+        <!-- Category Breakdown -->
+        {% if category_stats.by_sport %}
+        <section class="breakdown-section">
+            <h2>By Sport</h2>
+            <div class="breakdown-grid">
+                {% for sport, data in category_stats.by_sport.items() %}
+                <div class="breakdown-card {{ 'positive' if data.profit >= 0 else 'negative' }}">
+                    <span class="breakdown-name">{{ sport }}</span>
+                    <span class="breakdown-profit">${{ "%.2f"|format(data.profit) }}</span>
+                    <span class="breakdown-record">{{ data.wins }}/{{ data.count }} wins</span>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        {% if category_stats.by_bet_type %}
+        <section class="breakdown-section">
+            <h2>By Bet Type</h2>
+            <div class="breakdown-grid">
+                {% for bet_type, data in category_stats.by_bet_type.items() %}
+                <div class="breakdown-card {{ 'positive' if data.profit >= 0 else 'negative' }}">
+                    <span class="breakdown-name">{{ bet_type }}</span>
+                    <span class="breakdown-profit">${{ "%.2f"|format(data.profit) }}</span>
+                    <span class="breakdown-record">{{ data.wins }}/{{ data.count }} wins</span>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Add New Bet Form -->
+        <section class="add-bet-section">
+            <h2>Log New Bet</h2>
+            <form action="/add" method="POST" class="bet-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" name="date" value="{{ now.strftime('%Y-%m-%d') if now else '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="sport">Sport</label>
+                        <select id="sport" name="sport" required>
+                            <option value="">Select...</option>
+                            <option value="NBA">NBA</option>
+                            <option value="NFL">NFL</option>
+                            <option value="MLB">MLB</option>
+                            <option value="NHL">NHL</option>
+                            <option value="NCAAB">NCAAB</option>
+                            <option value="NCAAF">NCAAF</option>
+                            <option value="Soccer">Soccer</option>
+                            <option value="UFC">UFC</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="bet_type">Bet Type</label>
+                        <select id="bet_type" name="bet_type" required>
+                            <option value="">Select...</option>
+                            <option value="Spread">Spread</option>
+                            <option value="Moneyline">Moneyline</option>
+                            <option value="Total">Total (O/U)</option>
+                            <option value="Player Prop">Player Prop</option>
+                            <option value="Game Prop">Game Prop</option>
+                            <option value="Parlay">Parlay</option>
+                            <option value="Teaser">Teaser</option>
+                            <option value="Futures">Futures</option>
+                            <option value="Live Bet">Live Bet</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group flex-2">
+                        <label for="matchup">Matchup</label>
+                        <input type="text" id="matchup" name="matchup" placeholder="e.g. Lakers vs Celtics" required>
+                    </div>
+                    <div class="form-group flex-2">
+                        <label for="bet_description">Your Bet</label>
+                        <input type="text" id="bet_description" name="bet_description" placeholder="e.g. Lakers -3.5, Harden o25.5 pts" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="odds">Odds</label>
+                        <input type="number" id="odds" name="odds" placeholder="-110" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Wager ($)</label>
+                        <input type="number" id="amount" name="amount" step="0.01" placeholder="25.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sportsbook">Sportsbook</label>
+                        <select id="sportsbook" name="sportsbook">
+                            <option value="">Select...</option>
+                            <option value="DraftKings">DraftKings</option>
+                            <option value="FanDuel">FanDuel</option>
+                            <option value="PrizePicks">PrizePicks</option>
+                            <option value="BetMGM">BetMGM</option>
+                            <option value="Caesars">Caesars</option>
+                            <option value="PointsBet">PointsBet</option>
+                            <option value="BetRivers">BetRivers</option>
+                            <option value="Bovada">Bovada</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Log Bet</button>
+            </form>
+        </section>
+
+        <!-- Pending Bets -->
+        {% if pending_bets %}
+        <section class="bets-section">
+            <h2>Pending Bets</h2>
+            <div class="bets-list">
+                {% for bet in pending_bets %}
+                <div class="bet-card pending">
+                    <div class="bet-info">
+                        <span class="bet-sport">{{ bet.sport }}</span>
+                        <span class="bet-matchup">{{ bet.matchup }}</span>
+                        <span class="bet-description">{{ bet.bet_description }}</span>
+                        <span class="bet-details">{{ bet.odds }} | ${{ "%.2f"|format(bet.amount) }}</span>
+                    </div>
+                    <div class="bet-actions">
+                        <form action="/update/{{ bet.id }}" method="POST" class="inline-form">
+                            <input type="hidden" name="result" value="win">
+                            <button type="submit" class="btn btn-win">Win</button>
+                        </form>
+                        <form action="/update/{{ bet.id }}" method="POST" class="inline-form">
+                            <input type="hidden" name="result" value="loss">
+                            <button type="submit" class="btn btn-loss">Loss</button>
+                        </form>
+                        <form action="/update/{{ bet.id }}" method="POST" class="inline-form">
+                            <input type="hidden" name="result" value="push">
+                            <button type="submit" class="btn btn-push">Push</button>
+                        </form>
+                        <form action="/delete/{{ bet.id }}" method="POST" class="inline-form">
+                            <button type="submit" class="btn btn-delete">X</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Bet History -->
+        <section class="bets-section">
+            <h2>Bet History</h2>
+            {% if bets %}
+            <div class="bets-list">
+                {% for bet in bets %}
+                {% if bet.result != 'pending' %}
+                <div class="bet-card {{ bet.result }}">
+                    <div class="bet-info">
+                        <span class="bet-sport">{{ bet.sport }}</span>
+                        <span class="bet-matchup">{{ bet.matchup }}</span>
+                        <span class="bet-description">{{ bet.bet_description }}</span>
+                        <span class="bet-details">{{ bet.odds }} | ${{ "%.2f"|format(bet.amount) }}</span>
+                    </div>
+                    <div class="bet-result">
+                        <span class="result-badge {{ bet.result }}">{{ bet.result.upper() }}</span>
+                        <span class="profit {{ 'positive' if bet.profit >= 0 else 'negative' }}">
+                            {{ '+' if bet.profit >= 0 else '' }}${{ "%.2f"|format(bet.profit) }}
+                        </span>
+                    </div>
+                    <form action="/delete/{{ bet.id }}" method="POST" class="inline-form">
+                        <button type="submit" class="btn btn-delete">X</button>
+                    </form>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="no-bets">No bets logged yet. Add your first bet above!</p>
+            {% endif %}
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>LockTracker MVP | Track smart, bet smarter</p>
+        </footer>
+    </div>
+</body>
+</html>

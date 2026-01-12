@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DraftKings Sportsbook - Bet History (Mock Test Page)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #0d0d0d;
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .header {
+            background: linear-gradient(135deg, #53d337 0%, #2d8a1e 100%);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        .test-notice {
+            background: #ff6b35;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            background: #1a1a1a;
+            padding: 5px;
+            border-radius: 8px;
+        }
+        .tab {
+            padding: 12px 24px;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .tab.active {
+            background: #53d337;
+            color: #000;
+        }
+        .history-item {
+            background: #1a1a1a;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+        .bet-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #252525;
+        }
+        .sport-label {
+            font-size: 12px;
+            color: #53d337;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .outcome-status {
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .outcome-status.win {
+            background: #53d337;
+            color: #000;
+        }
+        .outcome-status.loss {
+            background: #e74c3c;
+            color: #fff;
+        }
+        .outcome-status.pending {
+            background: #f39c12;
+            color: #000;
+        }
+        .bet-card-body {
+            padding: 20px;
+        }
+        .game-name {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 8px;
+        }
+        .selection {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .bet-info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-top: 1px solid #333;
+        }
+        .bet-info-item {
+            text-align: center;
+        }
+        .bet-info-label {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+        .price {
+            font-size: 16px;
+            font-weight: bold;
+            color: #53d337;
+        }
+        .risk {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .payout {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .payout.win {
+            color: #53d337;
+        }
+        .payout.loss {
+            color: #e74c3c;
+        }
+        .bet-slip-card {
+            background: #1a1a1a;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #333;
+        }
+        .bet-slip-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .bet-slip-body {
+            padding: 20px;
+        }
+        .EventName {
+            color: #aaa;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+        .Selection {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .bet-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        .metric {
+            text-align: center;
+            padding: 10px;
+            background: #252525;
+            border-radius: 8px;
+        }
+        .metric-label {
+            font-size: 10px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        .metric-value {
+            font-size: 15px;
+            font-weight: bold;
+        }
+        .metric-value.american-odds {
+            color: #53d337;
+        }
+        .metric-value.wager {
+            color: #fff;
+        }
+        .metric-value.winnings {
+            color: #53d337;
+        }
+        .metric-value.winnings.lost {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-notice">
+        <strong>TEST PAGE</strong> - This is a mock DraftKings page for testing the Bet Tracker extension
+    </div>
+
+    <div class="header">
+        <h1>DraftKings Sportsbook</h1>
+        <p>Bet History - Settled Bets</p>
+    </div>
+
+    <div class="tabs">
+        <div class="tab">Open Bets</div>
+        <div class="tab active">Settled</div>
+        <div class="tab">All Bets</div>
+    </div>
+
+    <!-- Bet 1: NBA Win - Using history-item class -->
+    <div class="history-item settled won">
+        <div class="bet-card-header">
+            <span class="sport-label">NBA Basketball</span>
+            <span class="outcome-status win">Won</span>
+        </div>
+        <div class="bet-card-body">
+            <div class="game-name">Phoenix Suns @ Golden State Warriors</div>
+            <div class="selection">Warriors -3.5 Spread</div>
+            <div class="bet-info-row">
+                <div class="bet-info-item">
+                    <div class="bet-info-label">Odds</div>
+                    <div class="price">-110</div>
+                </div>
+                <div class="bet-info-item">
+                    <div class="bet-info-label">Risk</div>
+                    <div class="risk">$55.00</div>
+                </div>
+                <div class="bet-info-item">
+                    <div class="bet-info-label">Payout</div>
+                    <div class="payout win">$105.00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bet 2: NFL Loss - Using bet-slip-card class -->
+    <div class="bet-slip-card settled loss">
+        <div class="bet-slip-header">
+            <span class="sport-label">NFL Football</span>
+            <span class="outcome-status loss">Lost</span>
+        </div>
+        <div class="bet-slip-body">
+            <div class="EventName">Buffalo Bills vs Miami Dolphins</div>
+            <div class="Selection">Bills Moneyline to Win</div>
+            <div class="bet-metrics">
+                <div class="metric">
+                    <div class="metric-label">Odds</div>
+                    <div class="metric-value american-odds">-135</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Wager</div>
+                    <div class="metric-value wager">$40.00</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Winnings</div>
+                    <div class="metric-value winnings lost">$0.00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bet 3: NBA Player Prop Win -->
+    <div class="history-item settled won">
+        <div class="bet-card-header">
+            <span class="sport-label">NBA Basketball</span>
+            <span class="outcome-status win">Won</span>
+        </div>
+        <div class="bet-card-body">
+            <div class="game-name">Dallas Mavericks @ Los Angeles Clippers</div>
+            <div class="selection">Luka Doncic Over 32.5 Points</div>
+            <div class="bet-info-row">
+                <div class="bet-info-item">
+                    <div class="bet-info-label">Odds</div>
+                    <div class="price">-120</div>
+                </div>
+                <div class="bet-info-item">
+                    <div class="bet-info-label">Risk</div>
+                    <div class="risk">$24.00</div>
+                </div>
+                <div class="bet-info-item">
+                    <div class="bet-info-label">Payout</div>
+                    <div class="payout win">$44.00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bet 4: NHL Win -->
+    <div class="bet-slip-card settled won">
+        <div class="bet-slip-header">
+            <span class="sport-label">NHL Hockey</span>
+            <span class="outcome-status win">Won</span>
+        </div>
+        <div class="bet-slip-body">
+            <div class="EventName">Toronto Maple Leafs vs Detroit Red Wings</div>
+            <div class="Selection">Under 6.5 Total Goals</div>
+            <div class="bet-metrics">
+                <div class="metric">
+                    <div class="metric-label">Odds</div>
+                    <div class="metric-value american-odds">-105</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Wager</div>
+                    <div class="metric-value wager">$21.00</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Winnings</div>
+                    <div class="metric-value winnings">$41.00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bet 5: MLB Loss -->
+    <div class="history-item settled loss">
+        <div class="bet-card-header">
+            <span class="sport-label">MLB Baseball</span>
+            <span class="outcome-status loss">Lost</span>
+        </div>
+        <div class="bet-card-body">
+            <div class="game-name">Chicago Cubs @ St. Louis Cardinals</div>
+            <div class="selection">Cubs +1.5 Run Line</div>
+            <div class="bet-info-row">
+                <div class="bet-info-item">
+                    <div class="bet-info-label">Odds</div>
+                    <div class="price">-145</div>
+                </div>
+                <div class="bet-info-item">
+                    <div class="bet-info-label">Risk</div>
+                    <div class="risk">$29.00</div>
+                </div>
+                <div class="bet-info-item">
+                    <div class="bet-info-label">Payout</div>
+                    <div class="payout loss">$0.00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bet 6: NCAAB Win -->
+    <div class="bet-slip-card settled won">
+        <div class="bet-slip-header">
+            <span class="sport-label">College Basketball</span>
+            <span class="outcome-status win">Won</span>
+        </div>
+        <div class="bet-slip-body">
+            <div class="EventName">Duke Blue Devils vs North Carolina Tar Heels</div>
+            <div class="Selection">Duke -2.5 Spread</div>
+            <div class="bet-metrics">
+                <div class="metric">
+                    <div class="metric-label">Odds</div>
+                    <div class="metric-value american-odds">-110</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Wager</div>
+                    <div class="metric-value wager">$33.00</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Winnings</div>
+                    <div class="metric-value winnings">$63.00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bet 7: UFC Loss -->
+    <div class="history-item settled loss">
+        <div class="bet-card-header">
+            <span class="sport-label">UFC / MMA</span>
+            <span class="outcome-status loss">Lost</span>
+        </div>
+        <div class="bet-card-body">
+            <div class="game-name">UFC Fight Night - Main Card</div>
+            <div class="selection">Sean O'Malley to Win</div>
+            <div class="bet-info-row">
+                <div class="bet-info-item">
+                    <div class="bet-info-label">Odds</div>
+                    <div class="price">-180</div>
+                </div>
+                <div class="bet-info-item">
+                    <div class="bet-info-label">Risk</div>
+                    <div class="risk">$36.00</div>
+                </div>
+                <div class="bet-info-item">
+                    <div class="bet-info-label">Payout</div>
+                    <div class="payout loss">$0.00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bet 8: Pending Bet -->
+    <div class="bet-slip-card pending">
+        <div class="bet-slip-header">
+            <span class="sport-label">NBA Basketball</span>
+            <span class="outcome-status pending">Pending</span>
+        </div>
+        <div class="bet-slip-body">
+            <div class="EventName">Brooklyn Nets @ New York Knicks</div>
+            <div class="Selection">Knicks -8 Spread</div>
+            <div class="bet-metrics">
+                <div class="metric">
+                    <div class="metric-label">Odds</div>
+                    <div class="metric-value american-odds">-110</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Wager</div>
+                    <div class="metric-value wager">$50.00</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Potential</div>
+                    <div class="metric-value winnings">$95.45</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bet 9: Parlay Win (big payout) -->
+    <div class="history-item settled won">
+        <div class="bet-card-header">
+            <span class="sport-label">Parlay</span>
+            <span class="outcome-status win">Won</span>
+        </div>
+        <div class="bet-card-body">
+            <div class="game-name">4-Leg Parlay - Multiple Sports</div>
+            <div class="selection">Parlay: Warriors ML + Celtics ML + Over 220 + Chiefs -3</div>
+            <div class="bet-info-row">
+                <div class="bet-info-item">
+                    <div class="bet-info-label">Odds</div>
+                    <div class="price">+890</div>
+                </div>
+                <div class="bet-info-item">
+                    <div class="bet-info-label">Risk</div>
+                    <div class="risk">$10.00</div>
+                </div>
+                <div class="bet-info-item">
+                    <div class="bet-info-label">Payout</div>
+                    <div class="payout win">$99.00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bet 10: Soccer Win -->
+    <div class="bet-slip-card settled won">
+        <div class="bet-slip-header">
+            <span class="sport-label">Soccer - Premier League</span>
+            <span class="outcome-status win">Won</span>
+        </div>
+        <div class="bet-slip-body">
+            <div class="EventName">Manchester City FC vs Liverpool FC</div>
+            <div class="Selection">Draw (Tie)</div>
+            <div class="bet-metrics">
+                <div class="metric">
+                    <div class="metric-label">Odds</div>
+                    <div class="metric-value american-odds">+280</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Wager</div>
+                    <div class="metric-value wager">$15.00</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Winnings</div>
+                    <div class="metric-value winnings">$57.00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Inject content script simulation info
+        console.log('Mock DraftKings page loaded - ready for extension testing');
+        console.log('This page contains 10 test bets with various sports and results');
+    </script>
+</body>
+</html>

@@ -1,0 +1,480 @@
+/* ============================================
+   BET TRACKER - Styles
+   ============================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-primary: #0f0f0f;
+    --bg-secondary: #1a1a1a;
+    --bg-card: #242424;
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0a0;
+    --accent: #6366f1;
+    --positive: #22c55e;
+    --negative: #ef4444;
+    --warning: #f59e0b;
+    --border: #333333;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+header {
+    padding: 30px 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 30px;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-email {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.btn-logout {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    text-decoration: none;
+}
+
+.btn-logout:hover {
+    background: var(--negative);
+    color: white;
+    border-color: var(--negative);
+}
+
+/* Auth Pages Variables */
+:root {
+    --bg: #0f0f0f;
+    --card-bg: #1a1a1a;
+    --text: #ffffff;
+    --text-muted: #a0a0a0;
+    --accent-hover: #5558e3;
+}
+
+/* Stats Dashboard */
+.stats-dashboard {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    border: 1px solid var(--border);
+}
+
+.stat-card.main-stat {
+    grid-column: span 1;
+}
+
+.stat-card.main-stat.positive {
+    border-color: var(--positive);
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
+}
+
+.stat-card.main-stat.negative {
+    border-color: var(--negative);
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.stat-card.positive .stat-value {
+    color: var(--positive);
+}
+
+.stat-card.negative .stat-value {
+    color: var(--negative);
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Breakdown Sections */
+.breakdown-section {
+    margin-bottom: 30px;
+}
+
+.breakdown-section h2 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    color: var(--text-secondary);
+}
+
+.breakdown-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.breakdown-card {
+    background: var(--bg-card);
+    border-radius: 8px;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.breakdown-card.positive {
+    border-left: 3px solid var(--positive);
+}
+
+.breakdown-card.negative {
+    border-left: 3px solid var(--negative);
+}
+
+.breakdown-name {
+    font-weight: 600;
+}
+
+.breakdown-profit {
+    font-weight: 700;
+}
+
+.breakdown-card.positive .breakdown-profit {
+    color: var(--positive);
+}
+
+.breakdown-card.negative .breakdown-profit {
+    color: var(--negative);
+}
+
+.breakdown-record {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+/* Add Bet Form */
+.add-bet-section {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 30px;
+    border: 1px solid var(--border);
+}
+
+.add-bet-section h2 {
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+}
+
+.bet-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.flex-2 {
+    flex: 2;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.form-group input::placeholder {
+    color: var(--text-secondary);
+}
+
+/* Buttons */
+.btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #5558e3;
+}
+
+.btn-win {
+    background: var(--positive);
+    color: white;
+    padding: 8px 16px;
+}
+
+.btn-loss {
+    background: var(--negative);
+    color: white;
+    padding: 8px 16px;
+}
+
+.btn-push {
+    background: var(--warning);
+    color: white;
+    padding: 8px 16px;
+}
+
+.btn-delete {
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+}
+
+.btn-delete:hover {
+    background: var(--negative);
+    color: white;
+    border-color: var(--negative);
+}
+
+/* Bets Section */
+.bets-section {
+    margin-bottom: 30px;
+}
+
+.bets-section h2 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+}
+
+.bets-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.bet-card {
+    background: var(--bg-card);
+    border-radius: 10px;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid var(--border);
+    gap: 15px;
+}
+
+.bet-card.pending {
+    border-left: 3px solid var(--warning);
+}
+
+.bet-card.win {
+    border-left: 3px solid var(--positive);
+}
+
+.bet-card.loss {
+    border-left: 3px solid var(--negative);
+}
+
+.bet-card.push {
+    border-left: 3px solid var(--text-secondary);
+}
+
+.bet-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+}
+
+.bet-sport {
+    background: var(--accent);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.bet-matchup {
+    font-weight: 600;
+}
+
+.bet-description {
+    color: var(--text-secondary);
+}
+
+.bet-details {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.bet-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.inline-form {
+    display: inline;
+}
+
+.bet-result {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.result-badge {
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.result-badge.win {
+    background: rgba(34, 197, 94, 0.2);
+    color: var(--positive);
+}
+
+.result-badge.loss {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--negative);
+}
+
+.result-badge.push {
+    background: rgba(160, 160, 160, 0.2);
+    color: var(--text-secondary);
+}
+
+.profit {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.profit.positive {
+    color: var(--positive);
+}
+
+.profit.negative {
+    color: var(--negative);
+}
+
+.no-bets {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 40px;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 30px;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border);
+    margin-top: 30px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .stats-dashboard {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .form-row {
+        flex-direction: column;
+    }
+
+    .bet-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .bet-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .bet-actions {
+        width: 100%;
+        justify-content: flex-start;
+        margin-top: 10px;
+    }
+}
