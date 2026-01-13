@@ -22,7 +22,7 @@ function detectMockSite(url) {
   return null;
 }
 
-const APP_URL = 'http://127.0.0.1:5000';
+const APP_URL = 'https://web-production-efd3.up.railway.app';
 
 // Store user auth info
 let userAuth = null;
