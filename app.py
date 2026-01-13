@@ -29,6 +29,9 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 # Service client for server-side operations (bypasses RLS)
 supabase_admin = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 
+# Free tier limit
+FREE_TIER_MONTHLY_LIMIT = 15
+
 # ==============================================
 # AUTHENTICATION HELPERS
 # ==============================================
@@ -145,6 +148,35 @@ def get_user_bets(user_id):
         print(f"Error fetching bets: {e}")
         return []
 
+def get_monthly_bet_count(user_id):
+    """Count how many bets user has added this month"""
+    try:
+        # Get first day of current month
+        today = datetime.now()
+        first_of_month = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+
+        response = supabase_admin.table('bets').select('id', count='exact').eq('user_id', user_id).gte('created_at', first_of_month.isoformat()).execute()
+        return response.count or 0
+    except Exception as e:
+        print(f"Error counting monthly bets: {e}")
+        return 0
+
+def get_user_tier(user_id):
+    """Check if user is on free or paid tier (for now, everyone is free)"""
+    # TODO: Implement Stripe subscription checking
+    return 'free'
+
+def can_add_bets(user_id, count=1):
+    """Check if user can add more bets based on their tier"""
+    tier = get_user_tier(user_id)
+    if tier == 'paid':
+        return True, FREE_TIER_MONTHLY_LIMIT, 0  # Unlimited for paid users
+
+    monthly_count = get_monthly_bet_count(user_id)
+    remaining = FREE_TIER_MONTHLY_LIMIT - monthly_count
+    can_add = remaining >= count
+    return can_add, FREE_TIER_MONTHLY_LIMIT, monthly_count
+
 def get_stats(user_id):
     """Calculate overall betting stats for a user"""
     bets = get_user_bets(user_id)
@@ -229,18 +261,41 @@ def index():
     stats = get_stats(user['id'])
     category_stats = get_stats_by_category(user['id'])
 
+    # Get usage info for free tier
+    can_add, limit, monthly_count = can_add_bets(user['id'])
+    tier = get_user_tier(user['id'])
+
+    usage = {
+        'monthly_count': monthly_count,
+        'monthly_limit': limit,
+        'remaining': limit - monthly_count,
+        'tier': tier,
+        'at_limit': not can_add
+    }
+
+    # Check for limit error from redirect
+    error = request.args.get('error')
+
     return render_template('index.html',
                          bets=bets,
                          pending_bets=pending_bets,
                          stats=stats,
                          category_stats=category_stats,
-                         user=user)
+                         user=user,
+                         usage=usage,
+                         error=error)
 
 @app.route('/add', methods=['POST'])
 @login_required
 def add_bet():
     """Add a new bet"""
     user = get_current_user()
+
+    # Check if user can add more bets
+    can_add, limit, current_count = can_add_bets(user['id'])
+    if not can_add:
+        # Redirect back with error (could use flash messages for better UX)
+        return redirect(url_for('index', error='limit_reached'))
 
     date = request.form.get('date', datetime.now().strftime('%Y-%m-%d'))
     sport = request.form['sport']
@@ -332,9 +387,25 @@ def import_bets():
         if not bets:
             return jsonify({'success': False, 'error': 'No bets provided'})
 
+        # Check free tier limit
+        can_add, limit, current_count = can_add_bets(user_id, count=1)
+        remaining = limit - current_count
+
+        if not can_add:
+            return jsonify({
+                'success': False,
+                'error': f'Monthly limit reached ({limit} bets). Upgrade to Pro for unlimited bets!',
+                'limit_reached': True,
+                'monthly_used': current_count,
+                'monthly_limit': limit
+            })
+
         imported_count = 0
 
         for bet in bets:
+            # Check if we've hit the limit during import
+            if imported_count >= remaining:
+                break
             # Check for duplicates (use admin client to bypass RLS)
             existing = supabase_admin.table('bets').select('id').eq('user_id', user_id).eq('matchup', bet.get('matchup', '')).eq('bet_description', bet.get('bet_description', '')).eq('amount', bet.get('amount', 0)).execute()
 
@@ -381,11 +452,22 @@ def import_bets():
             }).execute()
             imported_count += 1
 
-        return jsonify({
+        # Calculate how many were skipped due to limit
+        skipped_due_to_limit = max(0, len(bets) - imported_count - (len(bets) - remaining if remaining < len(bets) else 0))
+        new_count = current_count + imported_count
+
+        response_data = {
             'success': True,
             'imported': imported_count,
-            'message': f'Successfully imported {imported_count} bets'
-        })
+            'message': f'Successfully imported {imported_count} bets',
+            'monthly_used': new_count,
+            'monthly_limit': limit
+        }
+
+        if imported_count < len(bets) and new_count >= limit:
+            response_data['warning'] = f'Some bets were not imported due to monthly limit ({limit}). Upgrade to Pro for unlimited!'
+
+        return jsonify(response_data)
 
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})

@@ -22,6 +22,35 @@
             </div>
         </header>
 
+        <!-- Usage Banner -->
+        {% if usage.tier == 'free' %}
+        <div class="usage-banner {% if usage.at_limit %}at-limit{% elif usage.remaining <= 3 %}near-limit{% endif %}">
+            <div class="usage-info">
+                <span class="usage-count">{{ usage.monthly_count }}/{{ usage.monthly_limit }}</span>
+                <span class="usage-label">bets this month</span>
+            </div>
+            {% if usage.at_limit %}
+            <div class="usage-warning">
+                <span>Monthly limit reached!</span>
+                <a href="#" class="btn btn-upgrade">Upgrade to Pro</a>
+            </div>
+            {% elif usage.remaining <= 3 %}
+            <div class="usage-warning">
+                <span>{{ usage.remaining }} bets remaining</span>
+                <a href="#" class="btn btn-upgrade">Upgrade to Pro</a>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Error Messages -->
+        {% if error == 'limit_reached' %}
+        <div class="error-banner">
+            You've reached your monthly limit of {{ usage.monthly_limit }} bets.
+            <a href="#" class="upgrade-link">Upgrade to Pro</a> for unlimited bets!
+        </div>
+        {% endif %}
+
         <!-- Stats Dashboard -->
         <section class="stats-dashboard">
             <div class="stat-card main-stat {{ 'positive' if stats.total_profit >= 0 else 'negative' }}">

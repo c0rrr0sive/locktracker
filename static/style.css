@@ -442,6 +442,97 @@ header h1 {
     padding: 40px;
 }
 
+/* Usage Banner */
+.usage-banner {
+    background: var(--bg-card);
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--border);
+}
+
+.usage-banner.near-limit {
+    border-color: var(--warning);
+    background: rgba(245, 158, 11, 0.1);
+}
+
+.usage-banner.at-limit {
+    border-color: var(--negative);
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.usage-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.usage-count {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.usage-banner.near-limit .usage-count {
+    color: var(--warning);
+}
+
+.usage-banner.at-limit .usage-count {
+    color: var(--negative);
+}
+
+.usage-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.usage-warning {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: var(--text-secondary);
+}
+
+.btn-upgrade {
+    background: linear-gradient(135deg, var(--accent), #8b5cf6);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-upgrade:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+}
+
+/* Error Banner */
+.error-banner {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid var(--negative);
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    color: var(--negative);
+    text-align: center;
+}
+
+.upgrade-link {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.upgrade-link:hover {
+    color: #8b5cf6;
+}
+
 /* Footer */
 footer {
     text-align: center;
