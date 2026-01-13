@@ -1,6 +1,11 @@
 # Credentials - NEVER upload these
 config/credentials.txt
 .env
+BACKUP_CODE.txt
+*.txt.bak
+
+# Claude Code temp files
+tmpclaude-*
 
 # Python
 __pycache__/
