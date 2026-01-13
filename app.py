@@ -16,10 +16,13 @@ app.secret_key = os.environ.get('SECRET_KEY', 'bet-tracker-dev-key-change-in-pro
 # Enable CORS for API routes (so extension can communicate)
 CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
 
-# Supabase configuration (use environment variables in production)
-SUPABASE_URL = os.environ.get('SUPABASE_URL', 'https://acbggpoveribronfmhcz.supabase.co')
-SUPABASE_KEY = os.environ.get('SUPABASE_KEY', 'sb_publishable_pgTDz-ve_VC14y4lq5RYYg_PgrJI2FU')
-SUPABASE_SERVICE_KEY = os.environ.get('SUPABASE_SERVICE_KEY', 'sb_secret_0YjRE8PHTzn6Ajy80Ebivg_YnSu6ZPc')
+# Supabase configuration (MUST be set via environment variables)
+SUPABASE_URL = os.environ.get('SUPABASE_URL')
+SUPABASE_KEY = os.environ.get('SUPABASE_KEY')
+SUPABASE_SERVICE_KEY = os.environ.get('SUPABASE_SERVICE_KEY')
+
+if not all([SUPABASE_URL, SUPABASE_KEY, SUPABASE_SERVICE_KEY]):
+    raise ValueError("Missing Supabase environment variables. Set SUPABASE_URL, SUPABASE_KEY, and SUPABASE_SERVICE_KEY.")
 
 # Public client for auth
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
