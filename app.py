@@ -347,15 +347,20 @@ def import_bets():
             elif sportsbook == 'Prizepicks':
                 sportsbook = 'PrizePicks'
 
-            # Calculate profit if result is known
+            # Get result and profit
             result = bet.get('result', 'pending')
             profit = 0
             if result in ['win', 'loss']:
-                profit = calculate_profit(
-                    bet.get('odds', -110),
-                    bet.get('amount', 0),
-                    result
-                )
+                # Use scraped profit if provided (important for PrizePicks Flex plays with partial wins)
+                if 'profit' in bet and bet['profit'] != 0:
+                    profit = bet['profit']
+                else:
+                    # Fallback: calculate from odds
+                    profit = calculate_profit(
+                        bet.get('odds', -110),
+                        bet.get('amount', 0),
+                        result
+                    )
 
             # Insert the bet (use admin client to bypass RLS)
             supabase_admin.table('bets').insert({
