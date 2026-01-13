@@ -24,18 +24,15 @@ function scrapeBets() {
   const bets = [];
 
   try {
-    // PrizePicks entry containers - look for entry cards in "My Entries" section
-    const entryContainers = document.querySelectorAll(
-      '[class*="entry-card"], [class*="EntryCard"], [class*="entry-item"], ' +
-      '[class*="settled-entry"], [class*="history-entry"], [class*="slip-card"], ' +
-      '.entry-card, .entry-item, [data-testid*="entry"]'
-    );
+    // PrizePicks entry cards - found via testing on real site
+    // Cards have class containing "border-soFresh-130"
+    const entryContainers = document.querySelectorAll('[class*="border-soFresh-130"]');
 
-    console.log(`LockTracker: Found ${entryContainers.length} potential entry containers`);
+    console.log(`LockTracker: Found ${entryContainers.length} PrizePicks entry cards`);
 
     entryContainers.forEach((container, index) => {
       try {
-        const bet = extractEntryFromContainer(container);
+        const bet = extractEntryFromCard(container);
         if (bet) {
           bets.push(bet);
           console.log(`LockTracker: Extracted entry ${index + 1}:`, bet);
@@ -45,22 +42,19 @@ function scrapeBets() {
       }
     });
 
-    // Alternative: Look for list items or card-like structures
+    // Fallback: try alternative selectors if main one didn't work
     if (bets.length === 0) {
-      const altContainers = document.querySelectorAll(
-        '[class*="pick"], [class*="Pick"], [class*="wager"], ' +
-        '[class*="board"] li, [class*="list"] > div'
-      );
-      console.log(`LockTracker: Trying alternative selectors, found ${altContainers.length}`);
+      console.log('LockTracker: Trying fallback selectors...');
+      const fallbackContainers = document.querySelectorAll('[class*="soFresh"], [class*="lineup"], [class*="entry"]');
 
-      altContainers.forEach((container, index) => {
+      fallbackContainers.forEach((container, index) => {
         try {
-          const bet = extractEntryFromContainer(container);
+          const bet = extractEntryFromCard(container);
           if (bet) {
             bets.push(bet);
           }
         } catch (e) {
-          console.error(`LockTracker: Error with alt container ${index + 1}:`, e);
+          console.error(`LockTracker: Fallback error ${index + 1}:`, e);
         }
       });
     }
@@ -74,122 +68,85 @@ function scrapeBets() {
   return bets;
 }
 
-// Extract entry data from a container
-function extractEntryFromContainer(container) {
-  const getText = (selectors) => {
-    for (const selector of selectors) {
-      const el = container.querySelector(selector);
-      if (el && el.textContent.trim()) {
-        return el.textContent.trim();
-      }
+// Extract entry data from a PrizePicks card
+// Format: "4-Pick $120.00\n\n$40.00 Power Play\n\nPlayer Names\n\nWin"
+function extractEntryFromCard(container) {
+  const text = container.innerText || container.textContent || '';
+
+  if (!text.trim()) return null;
+
+  console.log('LockTracker: Parsing card text:', text.substring(0, 100));
+
+  // Parse the text format:
+  // Line 1: "4-Pick $120.00" (legs and payout)
+  // Line 2: "$40.00 Power Play" or "$10.00 Flex Play" (amount and type)
+  // Line 3: Player names
+  // Line 4: "Win" or "Loss"
+
+  // Extract number of picks/legs
+  const legsMatch = text.match(/(\d+)-Pick/i);
+  const legs = legsMatch ? parseInt(legsMatch[1]) : 1;
+
+  // Extract payout (first dollar amount after X-Pick)
+  const payoutMatch = text.match(/\d+-Pick\s+\$([\d,.]+)/i);
+  const payout = payoutMatch ? parseFloat(payoutMatch[1].replace(/,/g, '')) : 0;
+
+  // Extract entry amount (dollar amount before "Play")
+  const amountMatch = text.match(/\$([\d,.]+)\s+(Power|Flex|Standard)?\s*Play/i);
+  const amount = amountMatch ? parseFloat(amountMatch[1].replace(/,/g, '')) : 0;
+
+  // Extract play type
+  const playTypeMatch = text.match(/(Power|Flex|Standard)\s*Play/i);
+  const playType = playTypeMatch ? playTypeMatch[1] + ' Play' : 'Entry';
+
+  // Extract result
+  const result = parseResult(text);
+
+  // Extract player names (look for comma-separated names or line with names)
+  const lines = text.split('\n').filter(line => line.trim());
+  let playerNames = '';
+
+  for (const line of lines) {
+    // Skip lines that are clearly not player names
+    if (line.match(/^\d+-Pick/i)) continue;
+    if (line.match(/\$[\d,.]+/)) continue;
+    if (line.match(/^(Win|Loss|Won|Lost|Pending|Live)$/i)) continue;
+
+    // This is likely the player names line
+    if (line.trim().length > 3 && !line.match(/Play$/i)) {
+      playerNames = line.trim();
+      break;
     }
-    return null;
-  };
-
-  // Look for player name(s) - PrizePicks is all player props
-  const playerName = getText([
-    '.player-name',
-    '[class*="player"]',
-    '[class*="Player"]',
-    '[class*="name"]',
-    'h3', 'h4'
-  ]);
-
-  // Look for the stat type (Points, Rebounds, etc.)
-  const statType = getText([
-    '.stat-type',
-    '[class*="stat"]',
-    '[class*="Stat"]',
-    '[class*="category"]',
-    '[class*="prop"]'
-  ]);
-
-  // Look for the line (Over/Under value)
-  const lineText = getText([
-    '.line',
-    '[class*="line"]',
-    '[class*="Line"]',
-    '[class*="projection"]',
-    '[class*="value"]'
-  ]);
-
-  // Look for Over/Under pick
-  const pickDirection = getText([
-    '.pick-direction',
-    '[class*="over"]',
-    '[class*="under"]',
-    '[class*="direction"]',
-    '[class*="pick-type"]'
-  ]) || detectOverUnder(container);
-
-  // Look for entry amount
-  const amountText = getText([
-    '.entry-amount',
-    '[class*="amount"]',
-    '[class*="entry"]',
-    '[class*="wager"]',
-    '[class*="stake"]'
-  ]);
-  const amount = parseAmount(amountText);
-
-  // Look for payout/winnings
-  const payoutText = getText([
-    '.payout',
-    '[class*="payout"]',
-    '[class*="Payout"]',
-    '[class*="winnings"]',
-    '[class*="return"]',
-    '[class*="prize"]'
-  ]);
-  const payout = parseAmount(payoutText);
-
-  // Look for result
-  const resultText = getText([
-    '.result',
-    '.status',
-    '[class*="result"]',
-    '[class*="status"]',
-    '[class*="outcome"]'
-  ]);
-  const result = parseResult(resultText, container);
-
-  // Look for number of legs/picks
-  const legsText = getText([
-    '.legs',
-    '[class*="leg"]',
-    '[class*="pick-count"]',
-    '[class*="combo"]'
-  ]);
-  const legs = parseLegs(legsText);
+  }
 
   // Build bet description
   let betDescription = '';
-  if (playerName && statType) {
-    const direction = pickDirection || 'Over';
-    betDescription = `${playerName} ${direction} ${lineText || ''} ${statType}`.trim();
-  } else if (playerName) {
-    betDescription = playerName;
+  if (playerNames) {
+    betDescription = `${playerNames} (${legs}-Pick ${playType})`;
   } else {
-    betDescription = getText(['p', 'span', 'div']) || 'PrizePicks Entry';
+    betDescription = `${legs}-Pick ${playType}`;
   }
 
-  // Detect sport from player/content
-  const sport = detectSport(container.textContent);
+  // Only return if we have meaningful data
+  if (legs > 0 && (amount > 0 || payout > 0)) {
+    // Calculate profit
+    let profit = 0;
+    if (result === 'win') {
+      profit = payout - amount;
+    } else if (result === 'loss') {
+      profit = -amount;
+    }
 
-  // Determine bet type based on legs
-  const betType = legs > 1 ? `${legs}-Pick Entry` : 'Player Prop';
-
-  if (betDescription && betDescription !== 'PrizePicks Entry') {
     return {
       source: 'prizepicks',
-      sport: sport,
+      sport: detectSport(text),
       matchup: 'PrizePicks Entry',
-      bet_type: betType,
+      bet_type: `${legs}-Pick ${playType}`,
       bet_description: betDescription,
-      odds: calculatePrizePicksOdds(legs),
-      amount: amount || 0,
+      odds: calculatePrizePicksOdds(legs, playType),
+      amount: amount,
       result: result,
-      profit: result === 'win' ? (payout - amount) : (result === 'loss' ? -amount : 0),
+      profit: profit,
       scraped_at: new Date().toISOString()
     };
   }
@@ -197,86 +154,76 @@ function extractEntryFromContainer(container) {
   return null;
 }
 
-// Detect Over/Under from container
-function detectOverUnder(container) {
-  const text = container.textContent.toLowerCase();
-  if (text.includes('over') || text.includes('more')) return 'Over';
-  if (text.includes('under') || text.includes('less')) return 'Under';
-  return null;
-}
+// Parse result from text
+function parseResult(text) {
+  const lower = (text || '').toLowerCase();
 
-// Parse dollar amount from text
-function parseAmount(text) {
-  if (!text) return 0;
-  const match = text.match(/\$?([\d,.]+)/);
-  if (match) {
-    return parseFloat(match[1].replace(/,/g, ''));
+  if (lower.includes('win') || lower.includes('won') || lower.includes('hit') || lower.includes('cashed')) {
+    return 'win';
   }
-  return 0;
-}
-
-// Parse number of legs
-function parseLegs(text) {
-  if (!text) return 1;
-  const match = text.match(/(\d+)/);
-  if (match) {
-    return parseInt(match[1]);
+  if (lower.includes('loss') || lower.includes('lost') || lower.includes('miss')) {
+    return 'loss';
   }
-  return 1;
-}
-
-// Parse result from text or container classes
-function parseResult(text, container = null) {
-  if (text) {
-    const lower = text.toLowerCase();
-    if (lower.includes('won') || lower.includes('win') || lower.includes('hit') || lower.includes('cashed')) return 'win';
-    if (lower.includes('lost') || lower.includes('loss') || lower.includes('miss')) return 'loss';
-    if (lower.includes('push') || lower.includes('refund') || lower.includes('void')) return 'push';
-    if (lower.includes('live') || lower.includes('active') || lower.includes('pending')) return 'pending';
+  if (lower.includes('push') || lower.includes('refund') || lower.includes('void')) {
+    return 'push';
   }
-
-  if (container) {
-    const classes = container.className.toLowerCase();
-    const text = container.textContent.toLowerCase();
-    if (classes.includes('won') || classes.includes('win') || classes.includes('hit') || text.includes('cashed')) return 'win';
-    if (classes.includes('lost') || classes.includes('loss') || classes.includes('miss')) return 'loss';
-    if (classes.includes('push') || classes.includes('refund')) return 'push';
+  if (lower.includes('live') || lower.includes('active') || lower.includes('pending') || lower.includes('in progress')) {
+    return 'pending';
   }
 
   return 'pending';
 }
 
 // Calculate approximate odds based on PrizePicks payout structure
-function calculatePrizePicksOdds(legs) {
-  // PrizePicks payout multipliers (approximate American odds)
-  const payouts = {
-    2: 300,   // 3x payout = +300
-    3: 500,   // 5x payout = +500  (or 2.25x flex)
-    4: 1000,  // 10x payout = +1000
-    5: 2000,  // 20x payout = +2000
-    6: 4000   // 40x payout = +4000
+function calculatePrizePicksOdds(legs, playType = 'Power') {
+  // Power Play payouts (all must hit)
+  const powerPayouts = {
+    2: 300,   // 3x
+    3: 500,   // 5x
+    4: 900,   // 10x
+    5: 1900,  // 20x
+    6: 3900   // 40x
   };
-  return payouts[legs] || 300;
+
+  // Flex Play payouts (can miss some)
+  const flexPayouts = {
+    3: 125,   // 2.25x (all hit)
+    4: 150,   // 2.5x (all hit)
+    5: 200,   // 3x (all hit)
+    6: 250    // 3.5x (all hit)
+  };
+
+  if (playType && playType.toLowerCase().includes('flex')) {
+    return flexPayouts[legs] || 150;
+  }
+
+  return powerPayouts[legs] || 300;
 }
 
 // Detect sport from text content
 function detectSport(text) {
   const lower = (text || '').toLowerCase();
 
-  // NBA players
-  if (lower.match(/lebron|curry|durant|giannis|luka|jokic|tatum|points|rebounds|assists|nba/)) return 'NBA';
-  // NFL players
-  if (lower.match(/mahomes|allen|hurts|rushing|passing|receiving|touchdowns|nfl|yards/)) return 'NFL';
-  // MLB players
-  if (lower.match(/ohtani|judge|soto|strikeouts|hits|home runs|mlb|pitcher|batter/)) return 'MLB';
-  // NHL players
-  if (lower.match(/mcdavid|ovechkin|goals|saves|nhl|hockey/)) return 'NHL';
-  // Soccer
-  if (lower.match(/messi|ronaldo|haaland|mbappe|shots|soccer|premier|goal/)) return 'Soccer';
-  // UFC
-  if (lower.match(/ufc|mma|fight|knockout|submission/)) return 'UFC';
-  // Esports (PrizePicks has this)
-  if (lower.match(/esports|league of legends|csgo|valorant|kills|gaming/)) return 'Esports';
+  // UFC/MMA fighters and terms
+  if (lower.match(/ufc|mma|fight|knockout|submission|aspinall|volkov|dern|adesanya|pereira|o'malley|chimaev/i)) return 'UFC';
+
+  // NBA players and terms
+  if (lower.match(/lebron|curry|durant|giannis|luka|jokic|tatum|points|rebounds|assists|nba|lakers|celtics|warriors/i)) return 'NBA';
+
+  // NFL players and terms
+  if (lower.match(/mahomes|allen|hurts|rushing|passing|receiving|touchdowns|nfl|yards|chiefs|eagles/i)) return 'NFL';
+
+  // MLB players and terms
+  if (lower.match(/ohtani|judge|soto|strikeouts|hits|home runs|mlb|pitcher|batter|yankees|dodgers/i)) return 'MLB';
+
+  // NHL players and terms
+  if (lower.match(/mcdavid|ovechkin|goals|saves|nhl|hockey|rangers|bruins/i)) return 'NHL';
+
+  // Soccer players and terms
+  if (lower.match(/messi|ronaldo|haaland|mbappe|shots|soccer|premier|goal|manchester|liverpool/i)) return 'Soccer';
+
+  // Esports
+  if (lower.match(/esports|league of legends|csgo|valorant|kills|gaming/i)) return 'Esports';
 
   return 'Other';
 }
