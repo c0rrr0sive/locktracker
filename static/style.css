@@ -84,6 +84,16 @@ header h1 {
     border-color: var(--negative);
 }
 
+.pro-badge {
+    background: linear-gradient(135deg, var(--accent), #8b5cf6);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
 /* Auth Pages Variables */
 :root {
     --bg: #0f0f0f;

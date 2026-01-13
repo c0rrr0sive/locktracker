@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - LockTracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .pricing-container {
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .pricing-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        .pricing-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .pricing-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 40px 30px;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+        .pricing-card.featured {
+            border-color: var(--accent);
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
+        }
+        .pricing-card.current {
+            border-color: var(--positive);
+        }
+        .popular-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--accent), #8b5cf6);
+            color: white;
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .current-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--positive);
+            color: white;
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .plan-price {
+            margin-bottom: 20px;
+        }
+        .price-amount {
+            font-size: 3rem;
+            font-weight: 700;
+        }
+        .price-period {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+        .plan-description {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+        .features-list {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+        .features-list li {
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-primary);
+        }
+        .features-list li::before {
+            content: "✓";
+            color: var(--positive);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .features-list li.disabled {
+            color: var(--text-secondary);
+            text-decoration: line-through;
+        }
+        .features-list li.disabled::before {
+            content: "✗";
+            color: var(--text-secondary);
+        }
+        .pricing-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .pricing-btn.primary {
+            background: linear-gradient(135deg, var(--accent), #8b5cf6);
+            color: white;
+        }
+        .pricing-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+        .pricing-btn.secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+        .pricing-btn.secondary:hover {
+            background: var(--border);
+        }
+        .pricing-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 40px;
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+        .back-link:hover {
+            color: var(--accent);
+        }
+        .guarantee {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .guarantee h3 {
+            margin-bottom: 8px;
+        }
+        .guarantee p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="pricing-container">
+        <div class="pricing-header">
+            <h1>Simple Pricing</h1>
+            <p>Choose the plan that fits your betting style</p>
+        </div>
+
+        <div class="pricing-grid">
+            <!-- Free Plan -->
+            <div class="pricing-card {% if tier == 'free' %}current{% endif %}">
+                {% if tier == 'free' %}
+                <span class="current-badge">Current Plan</span>
+                {% endif %}
+                <div class="plan-name">Free</div>
+                <div class="plan-price">
+                    <span class="price-amount">$0</span>
+                    <span class="price-period">/month</span>
+                </div>
+                <p class="plan-description">Great for getting started and trying out LockTracker</p>
+                <ul class="features-list">
+                    <li>15 bet syncs per month</li>
+                    <li>Manual sync from extension</li>
+                    <li>Basic stats dashboard</li>
+                    <li>PrizePicks, FanDuel, DraftKings</li>
+                    <li class="disabled">Auto-sync</li>
+                    <li class="disabled">Unlimited syncs</li>
+                </ul>
+                {% if tier == 'free' %}
+                <button class="pricing-btn secondary" disabled>Current Plan</button>
+                {% else %}
+                <button class="pricing-btn secondary" disabled>Free Plan</button>
+                {% endif %}
+            </div>
+
+            <!-- Pro Plan -->
+            <div class="pricing-card featured {% if tier == 'paid' %}current{% endif %}">
+                {% if tier == 'paid' %}
+                <span class="current-badge">Current Plan</span>
+                {% else %}
+                <span class="popular-badge">Most Popular</span>
+                {% endif %}
+                <div class="plan-name">Pro</div>
+                <div class="plan-price">
+                    <span class="price-amount">$9</span>
+                    <span class="price-period">/month</span>
+                </div>
+                <p class="plan-description">For serious bettors who want to track everything</p>
+                <ul class="features-list">
+                    <li>Unlimited bet syncs</li>
+                    <li>Auto-sync on page visit</li>
+                    <li>Advanced stats & analytics</li>
+                    <li>PrizePicks, FanDuel, DraftKings</li>
+                    <li>Priority support</li>
+                    <li>Early access to new features</li>
+                </ul>
+                {% if tier == 'paid' %}
+                <form action="{{ url_for('manage_subscription') }}" method="GET">
+                    <button type="submit" class="pricing-btn secondary">Manage Subscription</button>
+                </form>
+                {% else %}
+                <form action="{{ url_for('create_checkout_session') }}" method="POST">
+                    <button type="submit" class="pricing-btn primary">Upgrade to Pro</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="guarantee">
+            <h3>30-Day Money Back Guarantee</h3>
+            <p>Not happy with Pro? Contact us within 30 days for a full refund, no questions asked.</p>
+        </div>
+
+        <a href="{{ url_for('index') }}" class="back-link">← Back to Dashboard</a>
+    </div>
+</body>
+</html>

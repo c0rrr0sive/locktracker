@@ -9,6 +9,7 @@ from supabase import create_client
 from datetime import datetime
 from functools import wraps
 import os
+import stripe
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'bet-tracker-dev-key-change-in-production')
@@ -28,6 +29,16 @@ if not all([SUPABASE_URL, SUPABASE_KEY, SUPABASE_SERVICE_KEY]):
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 # Service client for server-side operations (bypasses RLS)
 supabase_admin = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+
+# Stripe configuration
+STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
+STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET')
+STRIPE_PRICE_ID = os.environ.get('STRIPE_PRICE_ID')  # Pro subscription price ID
+
+if STRIPE_SECRET_KEY:
+    stripe.api_key = STRIPE_SECRET_KEY
+else:
+    print("WARNING: STRIPE_SECRET_KEY not set. Stripe payments will not work.")
 
 # Free tier limit
 FREE_TIER_MONTHLY_LIMIT = 15
@@ -162,8 +173,15 @@ def get_monthly_bet_count(user_id):
         return 0
 
 def get_user_tier(user_id):
-    """Check if user is on free or paid tier (for now, everyone is free)"""
-    # TODO: Implement Stripe subscription checking
+    """Check if user is on free or paid tier"""
+    try:
+        # Check subscriptions table for active subscription
+        response = supabase_admin.table('subscriptions').select('*').eq('user_id', user_id).eq('status', 'active').execute()
+        if response.data and len(response.data) > 0:
+            return 'paid'
+    except Exception as e:
+        # Table might not exist yet, that's ok
+        print(f"Error checking subscription: {e}")
     return 'free'
 
 def can_add_bets(user_id, count=1):
@@ -525,6 +543,241 @@ def api_usage():
 
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
+
+# ==============================================
+# STRIPE PAYMENT ROUTES
+# ==============================================
+
+@app.route('/pricing')
+@login_required
+def pricing():
+    """Pricing page"""
+    user = get_current_user()
+    tier = get_user_tier(user['id'])
+    return render_template('pricing.html', user=user, tier=tier)
+
+@app.route('/checkout', methods=['POST'])
+@login_required
+def create_checkout_session():
+    """Create Stripe checkout session"""
+    if not STRIPE_SECRET_KEY or not STRIPE_PRICE_ID:
+        return jsonify({'error': 'Stripe not configured'}), 500
+
+    user = get_current_user()
+
+    try:
+        # Check if user already has a Stripe customer ID
+        existing = supabase_admin.table('subscriptions').select('stripe_customer_id').eq('user_id', user['id']).execute()
+
+        customer_id = None
+        if existing.data and existing.data[0].get('stripe_customer_id'):
+            customer_id = existing.data[0]['stripe_customer_id']
+
+        # Create checkout session
+        checkout_params = {
+            'payment_method_types': ['card'],
+            'line_items': [{
+                'price': STRIPE_PRICE_ID,
+                'quantity': 1,
+            }],
+            'mode': 'subscription',
+            'success_url': request.host_url + 'checkout/success?session_id={CHECKOUT_SESSION_ID}',
+            'cancel_url': request.host_url + 'checkout/cancel',
+            'client_reference_id': user['id'],
+            'metadata': {
+                'user_id': user['id'],
+                'user_email': user['email']
+            }
+        }
+
+        if customer_id:
+            checkout_params['customer'] = customer_id
+        else:
+            checkout_params['customer_email'] = user['email']
+
+        checkout_session = stripe.checkout.Session.create(**checkout_params)
+
+        return redirect(checkout_session.url)
+
+    except Exception as e:
+        print(f"Stripe checkout error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/checkout/success')
+@login_required
+def checkout_success():
+    """Handle successful checkout"""
+    session_id = request.args.get('session_id')
+    return render_template('checkout_success.html')
+
+@app.route('/checkout/cancel')
+@login_required
+def checkout_cancel():
+    """Handle cancelled checkout"""
+    return redirect(url_for('pricing'))
+
+@app.route('/webhook/stripe', methods=['POST'])
+def stripe_webhook():
+    """Handle Stripe webhooks"""
+    payload = request.get_data()
+    sig_header = request.headers.get('Stripe-Signature')
+
+    if not STRIPE_WEBHOOK_SECRET:
+        print("WARNING: Stripe webhook secret not configured")
+        return jsonify({'error': 'Webhook not configured'}), 500
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, STRIPE_WEBHOOK_SECRET
+        )
+    except ValueError as e:
+        print(f"Invalid payload: {e}")
+        return jsonify({'error': 'Invalid payload'}), 400
+    except stripe.error.SignatureVerificationError as e:
+        print(f"Invalid signature: {e}")
+        return jsonify({'error': 'Invalid signature'}), 400
+
+    # Handle the event
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        handle_checkout_completed(session)
+
+    elif event['type'] == 'customer.subscription.updated':
+        subscription = event['data']['object']
+        handle_subscription_updated(subscription)
+
+    elif event['type'] == 'customer.subscription.deleted':
+        subscription = event['data']['object']
+        handle_subscription_deleted(subscription)
+
+    elif event['type'] == 'invoice.payment_failed':
+        invoice = event['data']['object']
+        handle_payment_failed(invoice)
+
+    return jsonify({'status': 'success'})
+
+def handle_checkout_completed(session):
+    """Handle successful checkout - create/update subscription record"""
+    user_id = session.get('client_reference_id') or session.get('metadata', {}).get('user_id')
+    customer_id = session.get('customer')
+    subscription_id = session.get('subscription')
+
+    if not user_id:
+        print("No user_id in checkout session")
+        return
+
+    print(f"Checkout completed for user {user_id}")
+
+    try:
+        # Check if subscription record exists
+        existing = supabase_admin.table('subscriptions').select('id').eq('user_id', user_id).execute()
+
+        subscription_data = {
+            'user_id': user_id,
+            'stripe_customer_id': customer_id,
+            'stripe_subscription_id': subscription_id,
+            'status': 'active',
+            'updated_at': datetime.now().isoformat()
+        }
+
+        if existing.data:
+            # Update existing record
+            supabase_admin.table('subscriptions').update(subscription_data).eq('user_id', user_id).execute()
+        else:
+            # Create new record
+            subscription_data['created_at'] = datetime.now().isoformat()
+            supabase_admin.table('subscriptions').insert(subscription_data).execute()
+
+        print(f"Subscription activated for user {user_id}")
+
+    except Exception as e:
+        print(f"Error saving subscription: {e}")
+
+def handle_subscription_updated(subscription):
+    """Handle subscription status changes"""
+    subscription_id = subscription.get('id')
+    status = subscription.get('status')
+    customer_id = subscription.get('customer')
+
+    print(f"Subscription {subscription_id} updated to status: {status}")
+
+    try:
+        # Map Stripe status to our status
+        if status in ['active', 'trialing']:
+            our_status = 'active'
+        elif status in ['past_due', 'unpaid']:
+            our_status = 'past_due'
+        else:
+            our_status = 'inactive'
+
+        supabase_admin.table('subscriptions').update({
+            'status': our_status,
+            'updated_at': datetime.now().isoformat()
+        }).eq('stripe_subscription_id', subscription_id).execute()
+
+    except Exception as e:
+        print(f"Error updating subscription: {e}")
+
+def handle_subscription_deleted(subscription):
+    """Handle subscription cancellation"""
+    subscription_id = subscription.get('id')
+
+    print(f"Subscription {subscription_id} deleted/cancelled")
+
+    try:
+        supabase_admin.table('subscriptions').update({
+            'status': 'cancelled',
+            'updated_at': datetime.now().isoformat()
+        }).eq('stripe_subscription_id', subscription_id).execute()
+
+    except Exception as e:
+        print(f"Error cancelling subscription: {e}")
+
+def handle_payment_failed(invoice):
+    """Handle failed payment"""
+    subscription_id = invoice.get('subscription')
+    customer_id = invoice.get('customer')
+
+    print(f"Payment failed for subscription {subscription_id}")
+
+    try:
+        supabase_admin.table('subscriptions').update({
+            'status': 'past_due',
+            'updated_at': datetime.now().isoformat()
+        }).eq('stripe_subscription_id', subscription_id).execute()
+
+    except Exception as e:
+        print(f"Error updating subscription on payment failure: {e}")
+
+@app.route('/manage-subscription')
+@login_required
+def manage_subscription():
+    """Redirect to Stripe customer portal"""
+    if not STRIPE_SECRET_KEY:
+        return redirect(url_for('pricing'))
+
+    user = get_current_user()
+
+    try:
+        # Get customer ID
+        existing = supabase_admin.table('subscriptions').select('stripe_customer_id').eq('user_id', user['id']).execute()
+
+        if not existing.data or not existing.data[0].get('stripe_customer_id'):
+            return redirect(url_for('pricing'))
+
+        customer_id = existing.data[0]['stripe_customer_id']
+
+        # Create portal session
+        portal_session = stripe.billing_portal.Session.create(
+            customer=customer_id,
+            return_url=request.host_url
+        )
+
+        return redirect(portal_session.url)
+
+    except Exception as e:
+        print(f"Portal error: {e}")
+        return redirect(url_for('pricing'))
 
 if __name__ == '__main__':
     print("=" * 50)

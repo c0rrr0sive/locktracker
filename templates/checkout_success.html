@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Pro! - LockTracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .success-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .success-box {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 50px 40px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--positive);
+        }
+        .success-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        .success-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--positive);
+        }
+        .success-message {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .features-unlocked {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        .features-unlocked h3 {
+            margin-bottom: 15px;
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+        .features-unlocked ul {
+            list-style: none;
+        }
+        .features-unlocked li {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .features-unlocked li::before {
+            content: "✓";
+            color: var(--positive);
+            font-weight: bold;
+        }
+        .success-btn {
+            display: inline-block;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, var(--accent), #8b5cf6);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        .success-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <div class="success-box">
+            <div class="success-icon">🎉</div>
+            <h1 class="success-title">Welcome to Pro!</h1>
+            <p class="success-message">
+                Your subscription is now active. Thank you for upgrading!
+            </p>
+
+            <div class="features-unlocked">
+                <h3>You've unlocked:</h3>
+                <ul>
+                    <li>Unlimited bet syncs</li>
+                    <li>Auto-sync when you visit sportsbooks</li>
+                    <li>Advanced analytics</li>
+                    <li>Priority support</li>
+                </ul>
+            </div>
+
+            <a href="{{ url_for('index') }}" class="success-btn">Go to Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>

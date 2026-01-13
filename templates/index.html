@@ -17,6 +17,11 @@
                 </div>
                 <div class="user-info">
                     <span class="user-email">{{ user.email }}</span>
+                    {% if usage.tier == 'free' %}
+                    <a href="{{ url_for('pricing') }}" class="btn btn-upgrade">Upgrade</a>
+                    {% else %}
+                    <span class="pro-badge">PRO</span>
+                    {% endif %}
                     <a href="{{ url_for('logout') }}" class="btn btn-logout">Logout</a>
                 </div>
             </div>
@@ -32,12 +37,12 @@
             {% if usage.at_limit %}
             <div class="usage-warning">
                 <span>Monthly limit reached!</span>
-                <a href="#" class="btn btn-upgrade">Upgrade to Pro</a>
+                <a href="{{ url_for('pricing') }}" class="btn btn-upgrade">Upgrade to Pro</a>
             </div>
             {% elif usage.remaining <= 3 %}
             <div class="usage-warning">
                 <span>{{ usage.remaining }} bets remaining</span>
-                <a href="#" class="btn btn-upgrade">Upgrade to Pro</a>
+                <a href="{{ url_for('pricing') }}" class="btn btn-upgrade">Upgrade to Pro</a>
             </div>
             {% endif %}
         </div>
@@ -47,7 +52,7 @@
         {% if error == 'limit_reached' %}
         <div class="error-banner">
             You've reached your monthly limit of {{ usage.monthly_limit }} bets.
-            <a href="#" class="upgrade-link">Upgrade to Pro</a> for unlimited bets!
+            <a href="{{ url_for('pricing') }}" class="upgrade-link">Upgrade to Pro</a> for unlimited bets!
         </div>
         {% endif %}
 
