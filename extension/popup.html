@@ -10,7 +10,8 @@
     }
 
     body {
-      width: 320px;
+      width: 350px;
+      max-height: 500px;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: #0f0f0f;
       color: #ffffff;
@@ -105,6 +106,13 @@
       background: #333;
     }
 
+    .btn-small {
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      width: auto;
+      margin-bottom: 0;
+    }
+
     .sync-status {
       text-align: center;
       padding: 10px;
@@ -118,6 +126,10 @@
 
     .sync-status.error {
       color: #ef4444;
+    }
+
+    .sync-status.warning {
+      color: #f59e0b;
     }
 
     .bets-found {
@@ -176,6 +188,144 @@
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
+
+    /* Bet Selection View */
+    .selection-view {
+      background: #1a1a1a;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      border: 1px solid #333;
+    }
+
+    .selection-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #333;
+    }
+
+    .selection-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .selection-info {
+      font-size: 0.8rem;
+      color: #888;
+    }
+
+    .selection-info.warning {
+      color: #f59e0b;
+    }
+
+    .selection-info.limit {
+      color: #ef4444;
+    }
+
+    .bet-list {
+      max-height: 200px;
+      overflow-y: auto;
+      margin-bottom: 12px;
+    }
+
+    .bet-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      background: #242424;
+      cursor: pointer;
+    }
+
+    .bet-item:hover {
+      background: #2a2a2a;
+    }
+
+    .bet-item.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .bet-item input[type="checkbox"] {
+      margin-top: 3px;
+      accent-color: #6366f1;
+    }
+
+    .bet-item-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .bet-item-desc {
+      font-size: 0.85rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .bet-item-details {
+      font-size: 0.75rem;
+      color: #888;
+      margin-top: 2px;
+    }
+
+    .bet-item-result {
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-weight: 600;
+    }
+
+    .bet-item-result.win {
+      background: rgba(34, 197, 94, 0.2);
+      color: #22c55e;
+    }
+
+    .bet-item-result.loss {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+    }
+
+    .bet-item-result.pending {
+      background: rgba(245, 158, 11, 0.2);
+      color: #f59e0b;
+    }
+
+    .selection-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .selection-actions .btn {
+      flex: 1;
+    }
+
+    .limit-banner {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid #ef4444;
+      border-radius: 6px;
+      padding: 10px;
+      margin-bottom: 12px;
+      font-size: 0.8rem;
+      color: #ef4444;
+      text-align: center;
+    }
+
+    .remaining-banner {
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid #6366f1;
+      border-radius: 6px;
+      padding: 8px;
+      margin-bottom: 12px;
+      font-size: 0.8rem;
+      color: #a5a6ff;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -184,27 +334,57 @@
     <p>Sync your bets automatically</p>
   </div>
 
-  <div class="status-box">
-    <div class="status-row">
-      <span class="status-label">Current Site</span>
-      <span class="status-value" id="current-site">Checking...</span>
+  <!-- Initial View -->
+  <div id="initial-view">
+    <div class="status-box">
+      <div class="status-row">
+        <span class="status-label">Current Site</span>
+        <span class="status-value" id="current-site">Checking...</span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Status</span>
+        <span class="status-value" id="site-status">—</span>
+      </div>
     </div>
-    <div class="status-row">
-      <span class="status-label">Status</span>
-      <span class="status-value" id="site-status">—</span>
+
+    <div class="bets-found hidden" id="bets-found-box">
+      <div class="bets-count" id="bets-count">0</div>
+      <div class="bets-label">bets found on this page</div>
     </div>
+
+    <button class="btn btn-primary" id="sync-btn" disabled>
+      Sync Now
+    </button>
+
+    <div class="sync-status" id="sync-status"></div>
   </div>
 
-  <div class="bets-found hidden" id="bets-found-box">
-    <div class="bets-count" id="bets-count">0</div>
-    <div class="bets-label">bets found on this page</div>
+  <!-- Selection View (shown after clicking Sync Now) -->
+  <div id="selection-view" class="hidden">
+    <div class="selection-view">
+      <div class="selection-header">
+        <span class="selection-title">Select Bets to Sync</span>
+        <span class="selection-info" id="selection-count">0 selected</span>
+      </div>
+
+      <div class="remaining-banner" id="remaining-banner">
+        Loading...
+      </div>
+
+      <div id="limit-banner" class="limit-banner hidden">
+        Monthly limit reached! Upgrade to Pro for unlimited syncs.
+      </div>
+
+      <div class="bet-list" id="bet-list">
+        <!-- Bet items will be inserted here -->
+      </div>
+
+      <div class="selection-actions">
+        <button class="btn btn-secondary btn-small" id="back-btn">Back</button>
+        <button class="btn btn-primary btn-small" id="confirm-sync-btn">Sync Selected</button>
+      </div>
+    </div>
   </div>
-
-  <button class="btn btn-primary" id="sync-btn" disabled>
-    Sync Now
-  </button>
-
-  <div class="sync-status" id="sync-status"></div>
 
   <button class="btn btn-secondary" id="dashboard-btn">
     Open Dashboard

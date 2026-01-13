@@ -492,6 +492,40 @@ def api_stats():
     user = get_current_user()
     return jsonify(get_stats(user['id']))
 
+@app.route('/api/usage', methods=['POST'])
+def api_usage():
+    """Get user's usage info (for extension to know remaining bets)"""
+    try:
+        data = request.get_json()
+        user_token = data.get('access_token')
+
+        if not user_token:
+            return jsonify({'success': False, 'error': 'No authentication token'})
+
+        # Verify user from token
+        try:
+            user_response = supabase.auth.get_user(user_token)
+            user_id = user_response.user.id
+        except:
+            return jsonify({'success': False, 'error': 'Invalid or expired token'})
+
+        # Get usage info
+        tier = get_user_tier(user_id)
+        monthly_count = get_monthly_bet_count(user_id)
+        remaining = FREE_TIER_MONTHLY_LIMIT - monthly_count if tier == 'free' else 999999
+
+        return jsonify({
+            'success': True,
+            'tier': tier,
+            'monthly_count': monthly_count,
+            'monthly_limit': FREE_TIER_MONTHLY_LIMIT,
+            'remaining': max(0, remaining),
+            'at_limit': remaining <= 0 and tier == 'free'
+        })
+
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
 if __name__ == '__main__':
     print("=" * 50)
     print("LOCKTRACKER - Starting up!")

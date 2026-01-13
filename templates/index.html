@@ -27,7 +27,7 @@
         <div class="usage-banner {% if usage.at_limit %}at-limit{% elif usage.remaining <= 3 %}near-limit{% endif %}">
             <div class="usage-info">
                 <span class="usage-count">{{ usage.monthly_count }}/{{ usage.monthly_limit }}</span>
-                <span class="usage-label">bets this month</span>
+                <span class="usage-label">bets synced this month</span>
             </div>
             {% if usage.at_limit %}
             <div class="usage-warning">
