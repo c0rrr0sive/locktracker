@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - LockTracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .privacy-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .privacy-container h1 {
+            margin-bottom: 10px;
+        }
+        .privacy-container .updated {
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+        }
+        .privacy-container h2 {
+            margin-top: 40px;
+            margin-bottom: 15px;
+            color: var(--accent);
+        }
+        .privacy-container p, .privacy-container li {
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+        .privacy-container ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+        .privacy-container li {
+            margin-bottom: 8px;
+        }
+        .privacy-container strong {
+            color: var(--text-primary);
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 40px;
+            color: var(--accent);
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="privacy-container">
+        <h1>Privacy Policy</h1>
+        <p class="updated">Last Updated: January 2025</p>
+
+        <h2>Overview</h2>
+        <p>LockTracker ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you use our browser extension and web application.</p>
+
+        <h2>Information We Collect</h2>
+
+        <h3>Account Information</h3>
+        <ul>
+            <li>Email address (for account creation and login)</li>
+            <li>Password (securely hashed, never stored in plain text)</li>
+        </ul>
+
+        <h3>Betting Data</h3>
+        <p>When you use the "Sync" feature, we collect betting information from supported sportsbooks, including:</p>
+        <ul>
+            <li>Bet descriptions and matchups</li>
+            <li>Wager amounts</li>
+            <li>Odds</li>
+            <li>Results (win/loss/pending)</li>
+            <li>Profit/loss amounts</li>
+        </ul>
+        <p>This data is only collected when you explicitly click "Sync Now" or have auto-sync enabled (Pro feature).</p>
+
+        <h2>How We Use Your Information</h2>
+        <p>We use your information to:</p>
+        <ul>
+            <li>Provide the LockTracker service (tracking and analyzing your bets)</li>
+            <li>Calculate statistics (profit, ROI, win rate)</li>
+            <li>Improve our service</li>
+            <li>Send important account notifications</li>
+        </ul>
+
+        <h2>Data Storage and Security</h2>
+        <ul>
+            <li>Your data is stored securely using Supabase (PostgreSQL database)</li>
+            <li>All data transmission is encrypted using HTTPS</li>
+            <li>Passwords are hashed using industry-standard algorithms</li>
+            <li>Each user can only access their own data</li>
+        </ul>
+
+        <h2>Data Sharing</h2>
+        <p><strong>We do NOT:</strong></p>
+        <ul>
+            <li>Sell your personal information</li>
+            <li>Share your betting data with third parties</li>
+            <li>Use your data for advertising purposes</li>
+        </ul>
+
+        <h2>Third-Party Services</h2>
+        <p>We use the following third-party services:</p>
+        <ul>
+            <li><strong>Supabase</strong> - Database and authentication</li>
+            <li><strong>Stripe</strong> - Payment processing (for Pro subscriptions)</li>
+            <li><strong>Railway</strong> - Web hosting</li>
+        </ul>
+
+        <h2>Your Rights</h2>
+        <p>You have the right to:</p>
+        <ul>
+            <li>Access your data</li>
+            <li>Delete your account and all associated data</li>
+            <li>Export your betting data</li>
+        </ul>
+
+        <h2>Data Retention</h2>
+        <ul>
+            <li>Your data is retained as long as your account is active</li>
+            <li>Upon account deletion, all your data is permanently removed</li>
+        </ul>
+
+        <h2>Children's Privacy</h2>
+        <p>LockTracker is not intended for users under 18 years of age. We do not knowingly collect information from minors.</p>
+
+        <h2>Changes to This Policy</h2>
+        <p>We may update this Privacy Policy from time to time. We will notify users of significant changes via email or in-app notification.</p>
+
+        <h2>Contact Us</h2>
+        <p>If you have questions about this Privacy Policy, visit our website or contact support.</p>
+
+        <p style="margin-top: 40px;"><strong>By using LockTracker, you agree to this Privacy Policy.</strong></p>
+
+        <a href="{{ url_for('index') }}" class="back-link">← Back to LockTracker</a>
+    </div>
+</body>
+</html>

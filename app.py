@@ -556,6 +556,11 @@ def pricing():
     tier = get_user_tier(user['id'])
     return render_template('pricing.html', user=user, tier=tier)
 
+@app.route('/privacy')
+def privacy():
+    """Privacy policy page"""
+    return render_template('privacy.html')
+
 @app.route('/checkout', methods=['POST'])
 @login_required
 def create_checkout_session():
