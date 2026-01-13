@@ -278,8 +278,38 @@ function detectBetType(description, container = null) {
 }
 
 // Run when DOM is ready
-function onPageReady() {
+async function onPageReady() {
   console.log('LockTracker: Page ready, DraftKings detected');
+
+  // Wait a bit for the page to fully render
+  await new Promise(resolve => setTimeout(resolve, 2000));
+
+  // Notify background script that we're on a sportsbook page
+  try {
+    const response = await chrome.runtime.sendMessage({
+      action: 'pageLoaded',
+      site: 'DraftKings'
+    });
+
+    if (response && response.autoSync) {
+      console.log('LockTracker: Pro user - starting auto-sync');
+      // Scrape bets and send to background for syncing
+      const bets = scrapeBets();
+      if (bets.length > 0) {
+        const syncResult = await chrome.runtime.sendMessage({
+          action: 'autoSyncBets',
+          bets: bets
+        });
+        console.log('LockTracker: Auto-sync result:', syncResult);
+      } else {
+        console.log('LockTracker: No bets found to auto-sync');
+      }
+    } else {
+      console.log('LockTracker: Auto-sync not triggered:', response?.reason || 'unknown');
+    }
+  } catch (e) {
+    console.log('LockTracker: Could not communicate with background:', e);
+  }
 }
 
 if (document.readyState === 'loading') {

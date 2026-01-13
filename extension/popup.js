@@ -46,11 +46,32 @@ async function checkUserAuth() {
         user: data.user,
         access_token: data.access_token
       };
+      // Store auth in chrome.storage for background script (auto-sync)
+      chrome.runtime.sendMessage({
+        action: 'storeAuth',
+        access_token: data.access_token,
+        user: data.user
+      });
       return true;
     }
   } catch (e) {
     console.log('Could not check auth status:', e);
   }
+
+  // Try to get auth from chrome.storage as fallback
+  try {
+    const stored = await chrome.runtime.sendMessage({ action: 'getAuth' });
+    if (stored && stored.access_token) {
+      userAuth = {
+        user: stored.user,
+        access_token: stored.access_token
+      };
+      return true;
+    }
+  } catch (e) {
+    console.log('Could not get stored auth:', e);
+  }
+
   userAuth = null;
   return false;
 }

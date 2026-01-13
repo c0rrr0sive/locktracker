@@ -289,14 +289,41 @@ function detectBetType(description, container = null) {
   return 'Other';
 }
 
-// Auto-detect on page load (for potential auto-sync feature)
-function onPageReady() {
-  // Could be used to detect when bet history page loads
-  // and show notification or auto-sync for paid users
+// Run when DOM is ready
+async function onPageReady() {
   console.log('LockTracker: Page ready, FanDuel detected');
+
+  // Wait a bit for the page to fully render
+  await new Promise(resolve => setTimeout(resolve, 2000));
+
+  // Notify background script that we're on a sportsbook page
+  try {
+    const response = await chrome.runtime.sendMessage({
+      action: 'pageLoaded',
+      site: 'FanDuel'
+    });
+
+    if (response && response.autoSync) {
+      console.log('LockTracker: Pro user - starting auto-sync');
+      // Scrape bets and send to background for syncing
+      const bets = scrapeBets();
+      if (bets.length > 0) {
+        const syncResult = await chrome.runtime.sendMessage({
+          action: 'autoSyncBets',
+          bets: bets
+        });
+        console.log('LockTracker: Auto-sync result:', syncResult);
+      } else {
+        console.log('LockTracker: No bets found to auto-sync');
+      }
+    } else {
+      console.log('LockTracker: Auto-sync not triggered:', response?.reason || 'unknown');
+    }
+  } catch (e) {
+    console.log('LockTracker: Could not communicate with background:', e);
+  }
 }
 
-// Run when DOM is ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', onPageReady);
 } else {
