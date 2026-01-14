@@ -275,6 +275,11 @@ def home():
         return redirect(url_for('dashboard'))
     return render_template('landing.html')
 
+@app.route('/landing')
+def landing():
+    """Always show landing page (for previewing while logged in)"""
+    return render_template('landing.html')
+
 @app.route('/dashboard')
 @login_required
 def dashboard():
