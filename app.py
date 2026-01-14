@@ -3,13 +3,15 @@ LockTracker - With User Accounts
 A web app to track your sports bets with user authentication via Supabase.
 """
 
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, Response
 from flask_cors import CORS
 from supabase import create_client
 from datetime import datetime
 from functools import wraps
 import os
 import stripe
+import csv
+import io
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'bet-tracker-dev-key-change-in-production')
@@ -901,6 +903,49 @@ def delete_account():
 def account_deleted():
     """Confirmation page after account deletion"""
     return render_template('account_deleted.html')
+
+@app.route('/export-data')
+@login_required
+def export_data():
+    """Export all user's betting data as CSV"""
+    user = get_current_user()
+    bets = get_user_bets(user['id'])
+
+    # Create CSV in memory
+    output = io.StringIO()
+    writer = csv.writer(output)
+
+    # Write header
+    writer.writerow([
+        'Date', 'Sport', 'Matchup', 'Bet Type', 'Description',
+        'Odds', 'Amount', 'Result', 'Profit', 'Sportsbook', 'Created At'
+    ])
+
+    # Write data rows
+    for bet in bets:
+        writer.writerow([
+            bet.get('date', ''),
+            bet.get('sport', ''),
+            bet.get('matchup', ''),
+            bet.get('bet_type', ''),
+            bet.get('bet_description', ''),
+            bet.get('odds', ''),
+            bet.get('amount', ''),
+            bet.get('result', ''),
+            bet.get('profit', ''),
+            bet.get('sportsbook', ''),
+            bet.get('created_at', '')
+        ])
+
+    # Prepare response
+    output.seek(0)
+    filename = f"locktracker_export_{datetime.now().strftime('%Y%m%d')}.csv"
+
+    return Response(
+        output.getvalue(),
+        mimetype='text/csv',
+        headers={'Content-Disposition': f'attachment; filename={filename}'}
+    )
 
 if __name__ == '__main__':
     print("=" * 50)
