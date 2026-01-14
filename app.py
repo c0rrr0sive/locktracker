@@ -84,7 +84,7 @@ def signup():
                     'email': response.user.email
                 }
                 session['access_token'] = response.session.access_token
-                return redirect(url_for('index'))
+                return redirect(url_for('dashboard'))
             else:
                 return render_template('signup.html', error='Signup failed. Please try again.')
 
@@ -115,7 +115,7 @@ def login():
                     'email': response.user.email
                 }
                 session['access_token'] = response.session.access_token
-                return redirect(url_for('index'))
+                return redirect(url_for('dashboard'))
             else:
                 return render_template('login.html', error='Invalid email or password.')
 
@@ -269,8 +269,15 @@ def get_stats_by_category(user_id):
 # ==============================================
 
 @app.route('/')
+def home():
+    """Landing page or dashboard based on login status"""
+    if 'user' in session:
+        return redirect(url_for('dashboard'))
+    return render_template('landing.html')
+
+@app.route('/dashboard')
 @login_required
-def index():
+def dashboard():
     """Main page - show dashboard and recent bets"""
     user = get_current_user()
     bets = get_user_bets(user['id'])
@@ -341,7 +348,7 @@ def add_bet():
     except Exception as e:
         print(f"Error adding bet: {e}")
 
-    return redirect(url_for('index'))
+    return redirect(url_for('dashboard'))
 
 @app.route('/update/<int:bet_id>', methods=['POST'])
 @login_required
@@ -365,7 +372,7 @@ def update_bet(bet_id):
     except Exception as e:
         print(f"Error updating bet: {e}")
 
-    return redirect(url_for('index'))
+    return redirect(url_for('dashboard'))
 
 @app.route('/delete/<int:bet_id>', methods=['POST'])
 @login_required
@@ -378,7 +385,7 @@ def delete_bet(bet_id):
     except Exception as e:
         print(f"Error deleting bet: {e}")
 
-    return redirect(url_for('index'))
+    return redirect(url_for('dashboard'))
 
 # ==============================================
 # API ENDPOINTS (for browser extension)
