@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to Pro! - LockTracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
         .success-container {
@@ -20,8 +23,8 @@
             width: 100%;
             max-width: 500px;
             text-align: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--positive);
+            box-shadow: 0 0 40px rgba(245, 158, 11, 0.2);
+            border: 1px solid var(--accent);
         }
         .success-icon {
             font-size: 64px;
@@ -31,7 +34,10 @@
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 10px;
-            color: var(--positive);
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         .success-message {
             color: var(--text-secondary);
@@ -68,17 +74,17 @@
         .success-btn {
             display: inline-block;
             padding: 16px 40px;
-            background: linear-gradient(135deg, var(--accent), #8b5cf6);
-            color: white;
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #f59e0b 100%);
+            color: #000;
             text-decoration: none;
             border-radius: 10px;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 1rem;
             transition: all 0.2s;
         }
         .success-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
         }
         .confetti {
             position: fixed;

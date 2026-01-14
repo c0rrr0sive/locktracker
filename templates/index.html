@@ -3,17 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LockTracker</title>
+    <title>LockTracker - Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .header-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #f59e0b 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+        }
+        .header-logo-icon svg {
+            width: 22px;
+            height: 22px;
+            fill: #000;
+        }
+        header h1 {
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <!-- Header -->
         <header>
             <div class="header-top">
-                <div>
-                    <h1>LockTracker</h1>
-                    <p class="subtitle">Track your bets. Know your edge.</p>
+                <div class="header-logo">
+                    <div class="header-logo-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C9.24 2 7 4.24 7 7V8H6C4.9 8 4 8.9 4 10V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V10C20 8.9 19.1 8 18 8H17V7C17 4.24 14.76 2 12 2ZM12 4C13.66 4 15 5.34 15 7V8H9V7C9 5.34 10.34 4 12 4ZM12 13C13.1 13 14 13.9 14 15C14 16.1 13.1 17 12 17C10.9 17 10 16.1 10 15C10 13.9 10.9 13 12 13Z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1>LockTracker</h1>
+                        <p class="subtitle">Track your bets. Know your edge.</p>
+                    </div>
                 </div>
                 <div class="user-info">
                     <span class="user-email">{{ user.email }}</span>
@@ -256,7 +294,7 @@
 
         <!-- Footer -->
         <footer>
-            <p>LockTracker MVP | Track smart, bet smarter</p>
+            <p>LockTracker | <a href="{{ url_for('privacy') }}" style="color: var(--text-secondary); text-decoration: none;">Privacy Policy</a></p>
         </footer>
     </div>
 </body>
