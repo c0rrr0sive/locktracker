@@ -7,53 +7,145 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
-        .privacy-container {
-            max-width: 700px;
-            margin: 0 auto;
-            padding: 60px 20px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
+
+        :root {
+            --bg-primary: #050508;
+            --bg-glass: rgba(15, 15, 25, 0.6);
+            --bg-glass-light: rgba(30, 30, 50, 0.4);
+            --accent: #0ea5e9;
+            --accent-light: #38bdf8;
+            --accent-dark: #0284c7;
+            --text-primary: #f0f0f5;
+            --text-secondary: #9898a8;
+            --text-muted: #5a5a6e;
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --blur-amount: 20px;
+            --radius: 12px;
+            --radius-lg: 20px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            background-image:
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(14, 165, 233, 0.1), transparent);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .privacy-container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+
         .privacy-container h1 {
             font-size: 2rem;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--accent-light), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
+
         .privacy-container .updated {
             color: var(--text-muted);
             margin-bottom: 48px;
-            font-size: 0.875rem;
+            font-size: 0.9rem;
         }
+
         .privacy-container h2 {
-            margin-top: 40px;
-            margin-bottom: 16px;
+            margin-top: 44px;
+            margin-bottom: 18px;
             font-size: 1.25rem;
             color: var(--text-primary);
         }
-        .privacy-container p, .privacy-container li {
-            line-height: 1.8;
+
+        .privacy-container h3 {
+            margin-top: 28px;
+            margin-bottom: 14px;
+            font-size: 1rem;
             color: var(--text-secondary);
-            font-size: 0.9rem;
         }
+
+        .privacy-container p, .privacy-container li {
+            line-height: 1.85;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .privacy-container p {
+            margin-bottom: 16px;
+        }
+
         .privacy-container ul {
-            margin-left: 20px;
+            margin-left: 24px;
             margin-bottom: 20px;
         }
+
         .privacy-container li {
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            position: relative;
         }
+
+        .privacy-container li::marker {
+            color: var(--accent);
+        }
+
         .privacy-container strong {
             color: var(--text-primary);
+            font-weight: 600;
         }
+
+        .info-box {
+            background: var(--bg-glass);
+            backdrop-filter: blur(var(--blur-amount));
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        .info-box h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
         .back-link {
             display: inline-block;
             margin-top: 48px;
             color: var(--text-muted);
             text-decoration: none;
-            font-size: 0.875rem;
+            font-size: 0.9rem;
+            transition: color 0.2s;
         }
+
         .back-link:hover {
-            color: var(--text-secondary);
+            color: var(--accent-light);
+        }
+
+        .agreement {
+            margin-top: 48px;
+            padding: 24px;
+            background: var(--bg-glass-light);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius);
+            text-align: center;
+        }
+
+        .agreement p {
+            margin-bottom: 0;
+            color: var(--text-primary);
         }
     </style>
 </head>
@@ -94,12 +186,15 @@
         </ul>
 
         <h2>Data Storage and Security</h2>
-        <ul>
-            <li>Your data is stored securely using Supabase (PostgreSQL database)</li>
-            <li>All data transmission is encrypted using HTTPS</li>
-            <li>Passwords are hashed using industry-standard algorithms</li>
-            <li>Each user can only access their own data</li>
-        </ul>
+        <div class="info-box">
+            <h3>Your data is protected</h3>
+            <ul>
+                <li>Stored securely using Supabase (PostgreSQL database)</li>
+                <li>All data transmission is encrypted using HTTPS</li>
+                <li>Passwords are hashed using industry-standard algorithms</li>
+                <li>Each user can only access their own data</li>
+            </ul>
+        </div>
 
         <h2>Data Sharing</h2>
         <p><strong>We do NOT:</strong></p>
@@ -140,9 +235,11 @@
         <h2>Contact Us</h2>
         <p>If you have questions about this Privacy Policy, visit our website or contact support.</p>
 
-        <p style="margin-top: 40px;"><strong>By using LockTracker, you agree to this Privacy Policy.</strong></p>
+        <div class="agreement">
+            <p><strong>By using LockTracker, you agree to this Privacy Policy.</strong></p>
+        </div>
 
-        <a href="{{ url_for('dashboard') }}" class="back-link">← Back to LockTracker</a>
+        <a href="{{ url_for('dashboard') }}" class="back-link">&larr; Back to LockTracker</a>
     </div>
 </body>
 </html>

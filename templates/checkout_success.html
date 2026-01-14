@@ -7,8 +7,46 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #050508;
+            --bg-glass: rgba(15, 15, 25, 0.6);
+            --bg-glass-light: rgba(30, 30, 50, 0.4);
+            --accent: #0ea5e9;
+            --accent-light: #38bdf8;
+            --accent-dark: #0284c7;
+            --accent-glow: rgba(14, 165, 233, 0.4);
+            --accent-subtle: rgba(14, 165, 233, 0.15);
+            --text-primary: #f0f0f5;
+            --text-secondary: #9898a8;
+            --text-muted: #5a5a6e;
+            --positive: #10b981;
+            --positive-glow: rgba(16, 185, 129, 0.3);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --border-accent: rgba(14, 165, 233, 0.3);
+            --blur-amount: 20px;
+            --radius: 12px;
+            --radius-lg: 20px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            background-image:
+                radial-gradient(ellipse 80% 60% at 50% 20%, rgba(16, 185, 129, 0.12), transparent),
+                radial-gradient(ellipse 60% 40% at 30% 80%, rgba(14, 165, 233, 0.08), transparent);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
         .success-container {
             min-height: 100vh;
             display: flex;
@@ -16,80 +54,121 @@
             justify-content: center;
             padding: 20px;
         }
+
         .success-box {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 48px 40px;
-            width: 100%;
-            max-width: 450px;
-            text-align: center;
+            background: var(--bg-glass);
+            backdrop-filter: blur(var(--blur-amount));
+            -webkit-backdrop-filter: blur(var(--blur-amount));
             border: 1px solid var(--positive);
+            border-radius: var(--radius-lg);
+            padding: 48px 44px;
+            width: 100%;
+            max-width: 480px;
+            text-align: center;
+            box-shadow: 0 0 40px var(--positive-glow);
+            position: relative;
+            overflow: hidden;
         }
+
+        .success-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.5), transparent);
+        }
+
         .success-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, var(--positive), #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 24px;
+            box-shadow: 0 0 30px var(--positive-glow);
+            color: white;
         }
+
         .success-title {
             font-size: 1.75rem;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             color: var(--positive);
+            text-shadow: 0 0 20px var(--positive-glow);
         }
+
         .success-message {
             color: var(--text-secondary);
             font-size: 1rem;
-            margin-bottom: 32px;
-            line-height: 1.6;
+            margin-bottom: 36px;
+            line-height: 1.7;
         }
+
         .features-unlocked {
-            background: var(--bg-secondary);
-            border-radius: 12px;
+            background: var(--bg-glass-light);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius);
             padding: 24px;
-            margin-bottom: 32px;
+            margin-bottom: 36px;
             text-align: left;
         }
+
         .features-unlocked h3 {
-            margin-bottom: 16px;
-            font-size: 0.8rem;
+            margin-bottom: 18px;
+            font-size: 0.75rem;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.1em;
         }
+
         .features-unlocked ul {
             list-style: none;
         }
+
         .features-unlocked li {
-            padding: 8px 0;
+            padding: 10px 0;
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 0.9rem;
+            gap: 12px;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
         }
+
         .features-unlocked li::before {
-            content: "✓";
+            content: "";
             color: var(--positive);
             font-weight: bold;
+            text-shadow: 0 0 10px var(--positive-glow);
         }
+
         .success-btn {
             display: inline-block;
-            padding: 14px 36px;
-            background: var(--accent);
-            color: var(--bg-primary);
+            padding: 16px 40px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: white;
             text-decoration: none;
-            border-radius: 8px;
-            font-weight: 500;
-            font-size: 0.9rem;
-            transition: all 0.15s;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 20px var(--accent-glow);
         }
+
         .success-btn:hover {
-            background: var(--accent-muted);
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px var(--accent-glow), 0 8px 25px rgba(0, 0, 0, 0.3);
         }
     </style>
 </head>
 <body>
     <div class="success-container">
         <div class="success-box">
-            <div class="success-icon">✓</div>
+            <div class="success-icon">&#10003;</div>
             <h1 class="success-title">Welcome to Pro!</h1>
             <p class="success-message">
                 Your subscription is now active. Thank you for upgrading!

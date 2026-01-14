@@ -1,5 +1,6 @@
 /* ============================================
-   LOCKTRACKER - Stripe-Inspired Design System
+   LOCKTRACKER - Glassmorphism Design System
+   Electric Blue/Cyan Accent
    ============================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -11,42 +12,70 @@
 }
 
 :root {
-    /* Backgrounds */
-    --bg-primary: #0a0a0b;
-    --bg-secondary: #111113;
-    --bg-card: #161618;
-    --bg-elevated: #1c1c1f;
+    /* Base Colors */
+    --bg-primary: #050508;
+    --bg-secondary: #0a0a0f;
+    --bg-glass: rgba(15, 15, 25, 0.6);
+    --bg-glass-light: rgba(30, 30, 50, 0.4);
+    --bg-glass-hover: rgba(40, 40, 65, 0.5);
+
+    /* Accent - Electric Blue/Cyan */
+    --accent: #0ea5e9;
+    --accent-light: #38bdf8;
+    --accent-dark: #0284c7;
+    --accent-glow: rgba(14, 165, 233, 0.4);
+    --accent-subtle: rgba(14, 165, 233, 0.15);
 
     /* Text */
-    --text-primary: #fafafa;
-    --text-secondary: #71717a;
-    --text-muted: #52525b;
+    --text-primary: #f0f0f5;
+    --text-secondary: #9898a8;
+    --text-muted: #5a5a6e;
 
-    /* Accents */
-    --accent: #ffffff;
-    --accent-muted: #a1a1aa;
-
-    /* Status Colors */
-    --positive: #22c55e;
-    --negative: #ef4444;
-    --pending: #3b82f6;
-    --warning: #f59e0b;
+    /* Status */
+    --positive: #10b981;
+    --positive-glow: rgba(16, 185, 129, 0.3);
+    --negative: #f43f5e;
+    --negative-glow: rgba(244, 63, 94, 0.3);
+    --pending: #f59e0b;
 
     /* Borders */
-    --border: #27272a;
-    --border-hover: #3f3f46;
+    --border-glass: rgba(255, 255, 255, 0.08);
+    --border-accent: rgba(14, 165, 233, 0.3);
 
-    /* Spacing */
-    --radius: 8px;
-    --radius-lg: 12px;
+    /* Effects */
+    --blur-amount: 20px;
+    --radius: 12px;
+    --radius-lg: 20px;
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background-color: var(--bg-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-primary);
+    background-image:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(14, 165, 233, 0.15), transparent),
+        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(14, 165, 233, 0.08), transparent);
     color: var(--text-primary);
-    line-height: 1.5;
+    line-height: 1.6;
+    min-height: 100vh;
     -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================
+   GLASSMORPHISM UTILITIES
+   ============================================ */
+
+.glass {
+    background: var(--bg-glass);
+    backdrop-filter: blur(var(--blur-amount));
+    -webkit-backdrop-filter: blur(var(--blur-amount));
+    border: 1px solid var(--border-glass);
+}
+
+.glass-light {
+    background: var(--bg-glass-light);
+    backdrop-filter: blur(var(--blur-amount));
+    -webkit-backdrop-filter: blur(var(--blur-amount));
+    border: 1px solid var(--border-glass);
 }
 
 /* ============================================
@@ -65,7 +94,6 @@ body {
 
 header {
     padding: 20px 0;
-    border-bottom: 1px solid var(--border);
     margin-bottom: 32px;
 }
 
@@ -73,6 +101,12 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 16px 24px;
+    background: var(--bg-glass);
+    backdrop-filter: blur(var(--blur-amount));
+    -webkit-backdrop-filter: blur(var(--blur-amount));
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-lg);
 }
 
 .header-logo {
@@ -83,14 +117,16 @@ header {
 
 .header-logo h1 {
     font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    letter-spacing: -0.02em;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-light), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .subtitle {
-    color: var(--text-secondary);
-    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-size: 0.8rem;
     margin-top: 2px;
 }
 
@@ -102,31 +138,36 @@ header {
 
 .user-email {
     color: var(--text-secondary);
-    font-size: 0.875rem;
+    font-size: 0.85rem;
 }
 
 .pro-badge {
     font-size: 0.7rem;
     font-weight: 600;
-    letter-spacing: 0.05em;
-    padding: 4px 10px;
-    border: 1px solid var(--accent-muted);
-    border-radius: 4px;
-    color: var(--accent);
+    letter-spacing: 0.08em;
+    padding: 6px 12px;
+    background: var(--accent-subtle);
+    border: 1px solid var(--border-accent);
+    border-radius: 6px;
+    color: var(--accent-light);
+    box-shadow: 0 0 20px var(--accent-glow);
 }
 
 .btn-logout {
     color: var(--text-secondary);
-    font-size: 0.875rem;
+    font-size: 0.85rem;
     text-decoration: none;
-    padding: 6px 12px;
+    padding: 8px 14px;
     border-radius: var(--radius);
-    transition: all 0.15s ease;
+    transition: all 0.2s ease;
+    background: var(--bg-glass-light);
+    border: 1px solid var(--border-glass);
 }
 
 .btn-logout:hover {
     color: var(--text-primary);
-    background: var(--bg-elevated);
+    background: var(--bg-glass-hover);
+    border-color: rgba(255, 255, 255, 0.15);
 }
 
 /* ============================================
@@ -137,54 +178,73 @@ header {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
-    margin-bottom: 40px;
+    margin-bottom: 32px;
 }
 
 .stat-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
+    background: var(--bg-glass);
+    backdrop-filter: blur(var(--blur-amount));
+    -webkit-backdrop-filter: blur(var(--blur-amount));
+    border: 1px solid var(--border-glass);
     border-radius: var(--radius-lg);
-    padding: 20px;
-    transition: all 0.15s ease;
+    padding: 24px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
 }
 
 .stat-card:hover {
-    border-color: var(--border-hover);
-    background: var(--bg-elevated);
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .stat-card.main-stat.positive {
-    border-color: var(--positive);
+    border-color: rgba(16, 185, 129, 0.4);
+    box-shadow: 0 0 30px var(--positive-glow);
 }
 
 .stat-card.main-stat.negative {
-    border-color: var(--negative);
+    border-color: rgba(244, 63, 94, 0.4);
+    box-shadow: 0 0 30px var(--negative-glow);
 }
 
 .stat-label {
     display: block;
-    font-size: 0.75rem;
-    font-weight: 500;
+    font-size: 0.7rem;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-secondary);
-    margin-bottom: 8px;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 10px;
 }
 
 .stat-value {
     display: block;
-    font-size: 1.75rem;
-    font-weight: 600;
+    font-size: 2rem;
+    font-weight: 700;
     color: var(--text-primary);
     letter-spacing: -0.02em;
 }
 
 .stat-card.positive .stat-value {
     color: var(--positive);
+    text-shadow: 0 0 30px var(--positive-glow);
 }
 
 .stat-card.negative .stat-value {
     color: var(--negative);
+    text-shadow: 0 0 30px var(--negative-glow);
 }
 
 /* ============================================
@@ -196,34 +256,45 @@ header {
 }
 
 .breakdown-section h2 {
-    font-size: 0.8rem;
-    font-weight: 500;
+    font-size: 0.75rem;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-secondary);
-    margin-bottom: 12px;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 14px;
 }
 
 .breakdown-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 10px;
 }
 
 .breakdown-card {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
+    gap: 14px;
+    background: var(--bg-glass);
+    backdrop-filter: blur(var(--blur-amount));
+    -webkit-backdrop-filter: blur(var(--blur-amount));
+    border: 1px solid var(--border-glass);
     border-radius: 100px;
-    padding: 8px 16px;
-    font-size: 0.875rem;
-    transition: all 0.15s ease;
+    padding: 10px 20px;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
 }
 
 .breakdown-card:hover {
-    border-color: var(--border-hover);
+    border-color: rgba(255, 255, 255, 0.15);
+    background: var(--bg-glass-hover);
+}
+
+.breakdown-card.positive {
+    border-color: rgba(16, 185, 129, 0.25);
+}
+
+.breakdown-card.negative {
+    border-color: rgba(244, 63, 94, 0.25);
 }
 
 .breakdown-name {
@@ -232,7 +303,7 @@ header {
 }
 
 .breakdown-profit {
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .breakdown-card.positive .breakdown-profit {
@@ -253,30 +324,32 @@ header {
    ============================================ */
 
 .add-bet-section {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
+    background: var(--bg-glass);
+    backdrop-filter: blur(var(--blur-amount));
+    -webkit-backdrop-filter: blur(var(--blur-amount));
+    border: 1px solid var(--border-glass);
     border-radius: var(--radius-lg);
-    padding: 24px;
-    margin-bottom: 40px;
+    padding: 28px;
+    margin-bottom: 32px;
 }
 
 .add-bet-section h2 {
     font-size: 1rem;
     font-weight: 600;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
     color: var(--text-primary);
 }
 
 .bet-form {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 18px;
 }
 
 .form-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    gap: 14px;
 }
 
 .form-group {
@@ -284,34 +357,33 @@ header {
     flex-direction: column;
 }
 
-.form-group.flex-2 {
-    grid-column: span 1;
-}
-
 .form-group label {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 500;
-    color: var(--text-secondary);
-    margin-bottom: 6px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .form-group input,
 .form-group select {
-    padding: 10px 12px;
-    background: var(--bg-primary);
-    border: 1px solid var(--border);
+    padding: 12px 14px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-glass);
     border-radius: var(--radius);
     color: var(--text-primary);
     font-size: 0.9rem;
     font-family: inherit;
-    transition: all 0.15s ease;
+    transition: all 0.2s ease;
 }
 
 .form-group input:focus,
 .form-group select:focus {
     outline: none;
-    border-color: var(--accent-muted);
-    background: var(--bg-card);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-subtle), 0 0 20px var(--accent-glow);
+    background: rgba(0, 0, 0, 0.4);
 }
 
 .form-group input::placeholder {
@@ -330,93 +402,100 @@ header {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 10px 16px;
+    padding: 12px 20px;
     border-radius: var(--radius);
-    font-size: 0.875rem;
-    font-weight: 500;
+    font-size: 0.85rem;
+    font-weight: 600;
     font-family: inherit;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.2s ease;
     border: none;
 }
 
 .btn-primary {
-    background: var(--accent);
-    color: var(--bg-primary);
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    color: white;
+    box-shadow: 0 0 20px var(--accent-glow);
 }
 
 .btn-primary:hover {
-    background: var(--accent-muted);
+    transform: translateY(-1px);
+    box-shadow: 0 0 30px var(--accent-glow), 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .btn-upgrade {
-    background: transparent;
-    color: var(--text-primary);
-    border: 1px solid var(--border);
-    padding: 8px 16px;
+    background: var(--accent-subtle);
+    color: var(--accent-light);
+    border: 1px solid var(--border-accent);
+    padding: 10px 18px;
     font-size: 0.8rem;
     text-decoration: none;
     border-radius: var(--radius);
-    transition: all 0.15s ease;
+    transition: all 0.2s ease;
 }
 
 .btn-upgrade:hover {
     background: var(--accent);
-    color: var(--bg-primary);
-    border-color: var(--accent);
+    color: white;
+    box-shadow: 0 0 25px var(--accent-glow);
 }
 
 .btn-win, .btn-loss, .btn-push {
-    padding: 6px 12px;
+    padding: 8px 14px;
     font-size: 0.75rem;
-    font-weight: 500;
-    border-radius: 6px;
+    font-weight: 600;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
 }
 
 .btn-win {
-    background: rgba(34, 197, 94, 0.15);
+    background: rgba(16, 185, 129, 0.15);
     color: var(--positive);
-    border: 1px solid rgba(34, 197, 94, 0.3);
+    border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .btn-win:hover {
     background: var(--positive);
     color: white;
+    box-shadow: 0 0 20px var(--positive-glow);
 }
 
 .btn-loss {
-    background: rgba(239, 68, 68, 0.15);
+    background: rgba(244, 63, 94, 0.15);
     color: var(--negative);
-    border: 1px solid rgba(239, 68, 68, 0.3);
+    border: 1px solid rgba(244, 63, 94, 0.3);
 }
 
 .btn-loss:hover {
     background: var(--negative);
     color: white;
+    box-shadow: 0 0 20px var(--negative-glow);
 }
 
 .btn-push {
-    background: rgba(113, 113, 122, 0.15);
+    background: var(--bg-glass-light);
     color: var(--text-secondary);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-glass);
 }
 
 .btn-push:hover {
-    background: var(--text-secondary);
+    background: var(--text-muted);
     color: var(--bg-primary);
 }
 
 .btn-delete {
     background: transparent;
     color: var(--text-muted);
-    padding: 6px 10px;
-    font-size: 0.75rem;
+    padding: 8px 12px;
+    font-size: 0.8rem;
     border: 1px solid transparent;
+    border-radius: 8px;
 }
 
 .btn-delete:hover {
     color: var(--negative);
-    border-color: rgba(239, 68, 68, 0.3);
+    background: rgba(244, 63, 94, 0.1);
+    border-color: rgba(244, 63, 94, 0.3);
 }
 
 /* ============================================
@@ -424,21 +503,23 @@ header {
    ============================================ */
 
 .bets-section {
-    margin-bottom: 40px;
+    margin-bottom: 32px;
 }
 
 .bets-section h2 {
-    font-size: 0.8rem;
-    font-weight: 500;
+    font-size: 0.75rem;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-secondary);
-    margin-bottom: 16px;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 14px;
 }
 
 .bets-list {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
+    background: var(--bg-glass);
+    backdrop-filter: blur(var(--blur-amount));
+    -webkit-backdrop-filter: blur(var(--blur-amount));
+    border: 1px solid var(--border-glass);
     border-radius: var(--radius-lg);
     overflow: hidden;
 }
@@ -447,9 +528,9 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
-    transition: background 0.15s ease;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border-glass);
+    transition: all 0.2s ease;
     gap: 16px;
 }
 
@@ -458,7 +539,7 @@ header {
 }
 
 .bet-card:hover {
-    background: var(--bg-elevated);
+    background: var(--bg-glass-hover);
 }
 
 .bet-card.pending {
@@ -486,19 +567,19 @@ header {
 }
 
 .bet-sport {
-    font-size: 0.7rem;
-    font-weight: 600;
+    font-size: 0.65rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.03em;
-    color: var(--text-muted);
-    background: var(--bg-secondary);
-    padding: 4px 8px;
-    border-radius: 4px;
+    letter-spacing: 0.05em;
+    color: var(--accent-light);
+    background: var(--accent-subtle);
+    padding: 5px 10px;
+    border-radius: 6px;
     flex-shrink: 0;
 }
 
 .bet-matchup {
-    font-weight: 500;
+    font-weight: 600;
     color: var(--text-primary);
     white-space: nowrap;
     overflow: hidden;
@@ -507,7 +588,7 @@ header {
 
 .bet-description {
     color: var(--text-secondary);
-    font-size: 0.875rem;
+    font-size: 0.85rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -521,7 +602,7 @@ header {
 
 .bet-actions {
     display: flex;
-    gap: 6px;
+    gap: 8px;
     flex-shrink: 0;
 }
 
@@ -533,33 +614,33 @@ header {
 }
 
 .result-badge {
-    font-size: 0.7rem;
-    font-weight: 600;
+    font-size: 0.65rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.03em;
-    padding: 4px 8px;
-    border-radius: 4px;
+    letter-spacing: 0.05em;
+    padding: 5px 10px;
+    border-radius: 6px;
 }
 
 .result-badge.win {
-    background: rgba(34, 197, 94, 0.15);
+    background: rgba(16, 185, 129, 0.15);
     color: var(--positive);
 }
 
 .result-badge.loss {
-    background: rgba(239, 68, 68, 0.15);
+    background: rgba(244, 63, 94, 0.15);
     color: var(--negative);
 }
 
 .result-badge.push {
-    background: var(--bg-secondary);
+    background: var(--bg-glass-light);
     color: var(--text-secondary);
 }
 
 .profit {
-    font-weight: 600;
-    font-size: 0.9rem;
-    min-width: 80px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    min-width: 85px;
     text-align: right;
 }
 
@@ -578,7 +659,7 @@ header {
 .no-bets {
     text-align: center;
     color: var(--text-muted);
-    padding: 48px 24px;
+    padding: 50px 24px;
     font-size: 0.9rem;
 }
 
@@ -587,10 +668,12 @@ header {
    ============================================ */
 
 .usage-banner {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
+    background: var(--bg-glass);
+    backdrop-filter: blur(var(--blur-amount));
+    -webkit-backdrop-filter: blur(var(--blur-amount));
+    border: 1px solid var(--border-glass);
     border-radius: var(--radius-lg);
-    padding: 16px 20px;
+    padding: 18px 22px;
     margin-bottom: 24px;
     display: flex;
     justify-content: space-between;
@@ -598,27 +681,29 @@ header {
 }
 
 .usage-banner.near-limit {
-    border-color: var(--warning);
+    border-color: rgba(245, 158, 11, 0.4);
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.15);
 }
 
 .usage-banner.at-limit {
-    border-color: var(--negative);
+    border-color: rgba(244, 63, 94, 0.4);
+    box-shadow: 0 0 20px var(--negative-glow);
 }
 
 .usage-info {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
 }
 
 .usage-count {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--text-primary);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--accent-light);
 }
 
 .usage-banner.near-limit .usage-count {
-    color: var(--warning);
+    color: var(--pending);
 }
 
 .usage-banner.at-limit .usage-count {
@@ -627,7 +712,7 @@ header {
 
 .usage-label {
     color: var(--text-secondary);
-    font-size: 0.875rem;
+    font-size: 0.85rem;
 }
 
 .usage-warning {
@@ -635,7 +720,7 @@ header {
     align-items: center;
     gap: 16px;
     color: var(--text-secondary);
-    font-size: 0.875rem;
+    font-size: 0.85rem;
 }
 
 /* ============================================
@@ -643,18 +728,19 @@ header {
    ============================================ */
 
 .error-banner {
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
+    background: rgba(244, 63, 94, 0.1);
+    backdrop-filter: blur(var(--blur-amount));
+    border: 1px solid rgba(244, 63, 94, 0.3);
     border-radius: var(--radius-lg);
-    padding: 16px 20px;
+    padding: 18px 22px;
     margin-bottom: 24px;
     color: var(--negative);
     font-size: 0.9rem;
 }
 
 .upgrade-link {
-    color: var(--text-primary);
-    font-weight: 500;
+    color: var(--accent-light);
+    font-weight: 600;
     text-decoration: underline;
 }
 
@@ -671,17 +757,17 @@ footer {
     padding: 32px;
     color: var(--text-muted);
     font-size: 0.8rem;
-    border-top: 1px solid var(--border);
     margin-top: 40px;
 }
 
 footer a {
     color: var(--text-secondary);
     text-decoration: none;
+    transition: color 0.2s;
 }
 
 footer a:hover {
-    color: var(--text-primary);
+    color: var(--accent-light);
 }
 
 /* ============================================
@@ -693,9 +779,28 @@ footer a:hover {
         padding: 0 16px;
     }
 
+    .header-top {
+        flex-direction: column;
+        gap: 16px;
+        padding: 16px;
+    }
+
+    .user-info {
+        width: 100%;
+        justify-content: space-between;
+    }
+
     .stats-dashboard {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
+    }
+
+    .stat-card {
+        padding: 18px;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
     }
 
     .form-row {
@@ -711,7 +816,8 @@ footer a:hover {
     .bet-card {
         flex-direction: column;
         align-items: flex-start;
-        gap: 12px;
+        gap: 14px;
+        padding: 16px;
     }
 
     .bet-actions {
@@ -719,17 +825,6 @@ footer a:hover {
     }
 
     .bet-result {
-        width: 100%;
-        justify-content: space-between;
-    }
-
-    .header-top {
-        flex-direction: column;
-        gap: 16px;
-        align-items: flex-start;
-    }
-
-    .user-info {
         width: 100%;
         justify-content: space-between;
     }
