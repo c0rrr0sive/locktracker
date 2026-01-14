@@ -134,6 +134,68 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
+@app.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    """Forgot password page - sends reset email"""
+    if request.method == 'POST':
+        email = request.form['email']
+
+        try:
+            # Get the base URL for the reset link
+            base_url = request.host_url.rstrip('/')
+            redirect_url = f"{base_url}/reset-password"
+
+            # Send password reset email via Supabase
+            supabase.auth.reset_password_for_email(
+                email,
+                {"redirect_to": redirect_url}
+            )
+
+            # Always show success message (don't reveal if email exists)
+            return render_template('forgot_password.html',
+                                 success=True,
+                                 message='If an account exists with this email, you will receive a password reset link.')
+
+        except Exception as e:
+            print(f"Password reset error: {e}")
+            # Still show success to prevent email enumeration
+            return render_template('forgot_password.html',
+                                 success=True,
+                                 message='If an account exists with this email, you will receive a password reset link.')
+
+    return render_template('forgot_password.html')
+
+@app.route('/reset-password', methods=['GET', 'POST'])
+def reset_password():
+    """Reset password page - user sets new password after clicking email link"""
+    if request.method == 'POST':
+        password = request.form['password']
+        access_token = request.form.get('access_token')
+
+        if not access_token:
+            return render_template('reset_password.html', error='Invalid or expired reset link. Please request a new one.')
+
+        try:
+            # Use the access token to update the password
+            # First, set the session with the token from the URL
+            supabase.auth.set_session(access_token, request.form.get('refresh_token', ''))
+
+            # Now update the password
+            supabase.auth.update_user({"password": password})
+
+            return render_template('reset_password.html',
+                                 success=True,
+                                 message='Password updated successfully! You can now log in with your new password.')
+
+        except Exception as e:
+            print(f"Password update error: {e}")
+            return render_template('reset_password.html',
+                                 error='Could not update password. The reset link may have expired. Please request a new one.')
+
+    # GET request - check for tokens in URL (Supabase sends them as hash fragments)
+    # The tokens come as URL fragments (#access_token=...) which we handle in JavaScript
+    return render_template('reset_password.html')
+
 # ==============================================
 # HELPER FUNCTIONS
 # ==============================================
