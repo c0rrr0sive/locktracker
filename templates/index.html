@@ -3,39 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LockTracker - Dashboard</title>
+    <title>Dashboard - LockTracker</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        .header-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .header-logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #f59e0b 100%);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
-        }
-        .header-logo-icon svg {
-            width: 22px;
-            height: 22px;
-            fill: #000;
-        }
-        header h1 {
-            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
@@ -43,11 +15,6 @@
         <header>
             <div class="header-top">
                 <div class="header-logo">
-                    <div class="header-logo-icon">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2C9.24 2 7 4.24 7 7V8H6C4.9 8 4 8.9 4 10V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V10C20 8.9 19.1 8 18 8H17V7C17 4.24 14.76 2 12 2ZM12 4C13.66 4 15 5.34 15 7V8H9V7C9 5.34 10.34 4 12 4ZM12 13C13.1 13 14 13.9 14 15C14 16.1 13.1 17 12 17C10.9 17 10 16.1 10 15C10 13.9 10.9 13 12 13Z"/>
-                        </svg>
-                    </div>
                     <div>
                         <h1>LockTracker</h1>
                         <p class="subtitle">Track your bets. Know your edge.</p>
@@ -56,11 +23,11 @@
                 <div class="user-info">
                     <span class="user-email">{{ user.email }}</span>
                     {% if usage.tier == 'free' %}
-                    <a href="{{ url_for('pricing') }}" class="btn btn-upgrade">Upgrade</a>
+                    <a href="{{ url_for('pricing') }}" class="btn-upgrade">Upgrade</a>
                     {% else %}
                     <span class="pro-badge">PRO</span>
                     {% endif %}
-                    <a href="{{ url_for('logout') }}" class="btn btn-logout">Logout</a>
+                    <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
                 </div>
             </div>
         </header>
@@ -74,13 +41,13 @@
             </div>
             {% if usage.at_limit %}
             <div class="usage-warning">
-                <span>Monthly limit reached!</span>
-                <a href="{{ url_for('pricing') }}" class="btn btn-upgrade">Upgrade to Pro</a>
+                <span>Monthly limit reached</span>
+                <a href="{{ url_for('pricing') }}" class="btn-upgrade">Upgrade to Pro</a>
             </div>
             {% elif usage.remaining <= 3 %}
             <div class="usage-warning">
                 <span>{{ usage.remaining }} bets remaining</span>
-                <a href="{{ url_for('pricing') }}" class="btn btn-upgrade">Upgrade to Pro</a>
+                <a href="{{ url_for('pricing') }}" class="btn-upgrade">Upgrade to Pro</a>
             </div>
             {% endif %}
         </div>
@@ -90,27 +57,27 @@
         {% if error == 'limit_reached' %}
         <div class="error-banner">
             You've reached your monthly limit of {{ usage.monthly_limit }} bets.
-            <a href="{{ url_for('pricing') }}" class="upgrade-link">Upgrade to Pro</a> for unlimited bets!
+            <a href="{{ url_for('pricing') }}" class="upgrade-link">Upgrade to Pro</a> for unlimited bets.
         </div>
         {% endif %}
 
         <!-- Stats Dashboard -->
         <section class="stats-dashboard">
             <div class="stat-card main-stat {{ 'positive' if stats.total_profit >= 0 else 'negative' }}">
-                <span class="stat-value">${{ "%.2f"|format(stats.total_profit) }}</span>
                 <span class="stat-label">Total Profit</span>
+                <span class="stat-value">${{ "%.2f"|format(stats.total_profit) }}</span>
             </div>
             <div class="stat-card">
-                <span class="stat-value">{{ stats.win_rate }}%</span>
                 <span class="stat-label">Win Rate</span>
+                <span class="stat-value">{{ stats.win_rate }}%</span>
             </div>
             <div class="stat-card">
-                <span class="stat-value">{{ stats.roi }}%</span>
                 <span class="stat-label">ROI</span>
+                <span class="stat-value">{{ stats.roi }}%</span>
             </div>
             <div class="stat-card">
-                <span class="stat-value">{{ stats.wins }}-{{ stats.losses }}</span>
                 <span class="stat-label">Record</span>
+                <span class="stat-value">{{ stats.wins }}-{{ stats.losses }}</span>
             </div>
         </section>
 
@@ -123,7 +90,7 @@
                 <div class="breakdown-card {{ 'positive' if data.profit >= 0 else 'negative' }}">
                     <span class="breakdown-name">{{ sport }}</span>
                     <span class="breakdown-profit">${{ "%.2f"|format(data.profit) }}</span>
-                    <span class="breakdown-record">{{ data.wins }}/{{ data.count }} wins</span>
+                    <span class="breakdown-record">{{ data.wins }}/{{ data.count }}</span>
                 </div>
                 {% endfor %}
             </div>
@@ -138,7 +105,7 @@
                 <div class="breakdown-card {{ 'positive' if data.profit >= 0 else 'negative' }}">
                     <span class="breakdown-name">{{ bet_type }}</span>
                     <span class="breakdown-profit">${{ "%.2f"|format(data.profit) }}</span>
-                    <span class="breakdown-record">{{ data.wins }}/{{ data.count }} wins</span>
+                    <span class="breakdown-record">{{ data.wins }}/{{ data.count }}</span>
                 </div>
                 {% endfor %}
             </div>
@@ -186,23 +153,13 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group flex-2">
+                    <div class="form-group">
                         <label for="matchup">Matchup</label>
                         <input type="text" id="matchup" name="matchup" placeholder="e.g. Lakers vs Celtics" required>
                     </div>
-                    <div class="form-group flex-2">
+                    <div class="form-group">
                         <label for="bet_description">Your Bet</label>
-                        <input type="text" id="bet_description" name="bet_description" placeholder="e.g. Lakers -3.5, Harden o25.5 pts" required>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="odds">Odds</label>
-                        <input type="number" id="odds" name="odds" placeholder="-110" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="amount">Wager ($)</label>
-                        <input type="number" id="amount" name="amount" step="0.01" placeholder="25.00" required>
+                        <input type="text" id="bet_description" name="bet_description" placeholder="e.g. Lakers -3.5" required>
                     </div>
                     <div class="form-group">
                         <label for="sportsbook">Sportsbook</label>
@@ -220,7 +177,19 @@
                         </select>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Log Bet</button>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="odds">Odds</label>
+                        <input type="number" id="odds" name="odds" placeholder="-110" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Wager ($)</label>
+                        <input type="number" id="amount" name="amount" step="0.01" placeholder="25.00" required>
+                    </div>
+                    <div class="form-group" style="justify-content: flex-end;">
+                        <button type="submit" class="btn btn-primary">Log Bet</button>
+                    </div>
+                </div>
             </form>
         </section>
 
@@ -235,7 +204,7 @@
                         <span class="bet-sport">{{ bet.sport }}</span>
                         <span class="bet-matchup">{{ bet.matchup }}</span>
                         <span class="bet-description">{{ bet.bet_description }}</span>
-                        <span class="bet-details">{{ bet.odds }} | ${{ "%.2f"|format(bet.amount) }}</span>
+                        <span class="bet-details">{{ bet.odds }} · ${{ "%.2f"|format(bet.amount) }}</span>
                     </div>
                     <div class="bet-actions">
                         <form action="/update/{{ bet.id }}" method="POST" class="inline-form">
@@ -251,7 +220,7 @@
                             <button type="submit" class="btn btn-push">Push</button>
                         </form>
                         <form action="/delete/{{ bet.id }}" method="POST" class="inline-form">
-                            <button type="submit" class="btn btn-delete">X</button>
+                            <button type="submit" class="btn btn-delete">×</button>
                         </form>
                     </div>
                 </div>
@@ -272,29 +241,31 @@
                         <span class="bet-sport">{{ bet.sport }}</span>
                         <span class="bet-matchup">{{ bet.matchup }}</span>
                         <span class="bet-description">{{ bet.bet_description }}</span>
-                        <span class="bet-details">{{ bet.odds }} | ${{ "%.2f"|format(bet.amount) }}</span>
+                        <span class="bet-details">{{ bet.odds }} · ${{ "%.2f"|format(bet.amount) }}</span>
                     </div>
                     <div class="bet-result">
-                        <span class="result-badge {{ bet.result }}">{{ bet.result.upper() }}</span>
+                        <span class="result-badge {{ bet.result }}">{{ bet.result }}</span>
                         <span class="profit {{ 'positive' if bet.profit >= 0 else 'negative' }}">
                             {{ '+' if bet.profit >= 0 else '' }}${{ "%.2f"|format(bet.profit) }}
                         </span>
                     </div>
                     <form action="/delete/{{ bet.id }}" method="POST" class="inline-form">
-                        <button type="submit" class="btn btn-delete">X</button>
+                        <button type="submit" class="btn btn-delete">×</button>
                     </form>
                 </div>
                 {% endif %}
                 {% endfor %}
             </div>
             {% else %}
-            <p class="no-bets">No bets logged yet. Add your first bet above!</p>
+            <div class="bets-list">
+                <p class="no-bets">No bets logged yet. Add your first bet above!</p>
+            </div>
             {% endif %}
         </section>
 
         <!-- Footer -->
         <footer>
-            <p>LockTracker | <a href="{{ url_for('privacy') }}" style="color: var(--text-secondary); text-decoration: none;">Privacy Policy</a></p>
+            <a href="{{ url_for('privacy') }}">Privacy Policy</a>
         </footer>
     </div>
 </body>

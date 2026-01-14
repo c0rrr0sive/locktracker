@@ -6,29 +6,34 @@
     <title>Privacy Policy - LockTracker</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
         .privacy-container {
-            max-width: 800px;
+            max-width: 700px;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 60px 20px;
         }
         .privacy-container h1 {
-            margin-bottom: 10px;
+            font-size: 2rem;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
         }
         .privacy-container .updated {
-            color: var(--text-secondary);
-            margin-bottom: 40px;
+            color: var(--text-muted);
+            margin-bottom: 48px;
+            font-size: 0.875rem;
         }
         .privacy-container h2 {
             margin-top: 40px;
-            margin-bottom: 15px;
-            color: var(--accent);
+            margin-bottom: 16px;
+            font-size: 1.25rem;
+            color: var(--text-primary);
         }
         .privacy-container p, .privacy-container li {
             line-height: 1.8;
             color: var(--text-secondary);
+            font-size: 0.9rem;
         }
         .privacy-container ul {
             margin-left: 20px;
@@ -42,12 +47,13 @@
         }
         .back-link {
             display: inline-block;
-            margin-top: 40px;
-            color: var(--accent);
+            margin-top: 48px;
+            color: var(--text-muted);
             text-decoration: none;
+            font-size: 0.875rem;
         }
         .back-link:hover {
-            text-decoration: underline;
+            color: var(--text-secondary);
         }
     </style>
 </head>

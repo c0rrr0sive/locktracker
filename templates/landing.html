@@ -15,20 +15,19 @@
         }
 
         :root {
-            --bg-primary: #09090b;
+            --bg-primary: #0a0a0b;
             --bg-secondary: #111113;
-            --bg-card: #18181b;
-            --bg-card-hover: #1f1f23;
+            --bg-card: #161618;
+            --bg-elevated: #1c1c1f;
             --border: #27272a;
+            --border-hover: #3f3f46;
             --text-primary: #fafafa;
             --text-secondary: #a1a1aa;
             --text-muted: #71717a;
-            --accent: #f59e0b;
-            --accent-hover: #d97706;
-            --accent-glow: rgba(245, 158, 11, 0.15);
-            --positive: #10b981;
+            --accent: #ffffff;
+            --accent-muted: #a1a1aa;
+            --positive: #22c55e;
             --negative: #ef4444;
-            --gradient-gold: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #f59e0b 100%);
         }
 
         body {
@@ -36,20 +35,7 @@
             background: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* Ambient glow effect */
-        .ambient-glow {
-            position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 30% 20%, rgba(245, 158, 11, 0.03) 0%, transparent 50%),
-                        radial-gradient(circle at 70% 80%, rgba(245, 158, 11, 0.02) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* Navigation */
@@ -59,37 +45,34 @@
             left: 0;
             right: 0;
             z-index: 100;
-            padding: 20px 40px;
+            padding: 16px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(9, 9, 11, 0.8);
+            background: rgba(10, 10, 11, 0.8);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(39, 39, 42, 0.5);
+            border-bottom: 1px solid var(--border);
         }
 
         .logo {
-            font-size: 1.5rem;
-            font-weight: 800;
+            font-size: 1.25rem;
+            font-weight: 700;
             letter-spacing: -0.5px;
-            background: var(--gradient-gold);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--text-primary);
         }
 
         .nav-links {
             display: flex;
-            gap: 30px;
+            gap: 32px;
             align-items: center;
         }
 
         .nav-links a {
             color: var(--text-secondary);
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.875rem;
             font-weight: 500;
-            transition: color 0.2s;
+            transition: color 0.15s;
         }
 
         .nav-links a:hover {
@@ -100,25 +83,23 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 12px 24px;
+            padding: 10px 20px;
             border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
+            font-size: 0.875rem;
+            font-weight: 500;
             text-decoration: none;
-            transition: all 0.2s;
+            transition: all 0.15s;
             cursor: pointer;
             border: none;
         }
 
         .btn-primary {
-            background: var(--gradient-gold);
-            color: #000;
-            box-shadow: 0 0 20px var(--accent-glow);
+            background: var(--accent);
+            color: var(--bg-primary);
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);
+            background: var(--accent-muted);
         }
 
         .btn-secondary {
@@ -129,7 +110,7 @@
 
         .btn-secondary:hover {
             background: var(--bg-card);
-            border-color: var(--text-muted);
+            border-color: var(--border-hover);
         }
 
         /* Hero Section */
@@ -140,69 +121,61 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 120px 20px 80px;
-            position: relative;
-            z-index: 1;
+            padding: 140px 20px 100px;
         }
 
         .hero-badge {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 16px;
+            padding: 6px 14px;
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 100px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-secondary);
-            margin-bottom: 30px;
+            margin-bottom: 32px;
         }
 
         .hero-badge span {
-            color: var(--accent);
+            color: var(--positive);
             font-weight: 600;
         }
 
         .hero h1 {
-            font-size: clamp(2.5rem, 8vw, 4.5rem);
-            font-weight: 800;
+            font-size: clamp(2.5rem, 7vw, 4rem);
+            font-weight: 700;
             letter-spacing: -2px;
             line-height: 1.1;
-            margin-bottom: 24px;
-            max-width: 800px;
-        }
-
-        .hero h1 .highlight {
-            background: var(--gradient-gold);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            margin-bottom: 20px;
+            max-width: 700px;
         }
 
         .hero p {
-            font-size: 1.25rem;
+            font-size: 1.125rem;
             color: var(--text-secondary);
-            max-width: 600px;
+            max-width: 500px;
             margin-bottom: 40px;
+            line-height: 1.7;
         }
 
         .hero-buttons {
             display: flex;
-            gap: 16px;
+            gap: 12px;
             flex-wrap: wrap;
             justify-content: center;
         }
 
         .hero-buttons .btn {
-            padding: 16px 32px;
-            font-size: 1rem;
+            padding: 14px 28px;
+            font-size: 0.9rem;
         }
 
         /* Stats Bar */
         .stats-bar {
             display: flex;
             justify-content: center;
-            gap: 60px;
+            gap: 48px;
             margin-top: 80px;
             padding-top: 40px;
             border-top: 1px solid var(--border);
@@ -213,20 +186,20 @@
         }
 
         .stat-value {
-            font-size: 2rem;
+            font-size: 1.75rem;
             font-weight: 700;
-            color: var(--accent);
+            color: var(--text-primary);
         }
 
         .stat-label {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
             margin-top: 4px;
         }
 
         /* Platforms Section */
         .platforms {
-            padding: 60px 20px;
+            padding: 48px 20px;
             text-align: center;
             border-top: 1px solid var(--border);
             background: var(--bg-secondary);
@@ -234,30 +207,30 @@
 
         .platforms p {
             color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 30px;
+            font-size: 0.75rem;
+            margin-bottom: 24px;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
+            font-weight: 500;
         }
 
         .platform-logos {
             display: flex;
             justify-content: center;
-            gap: 50px;
+            gap: 40px;
             flex-wrap: wrap;
-            opacity: 0.7;
         }
 
         .platform-logos span {
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 600;
-            color: var(--text-secondary);
+            color: var(--text-muted);
         }
 
         /* Features Section */
         .features {
-            padding: 120px 20px;
-            max-width: 1200px;
+            padding: 100px 20px;
+            max-width: 1100px;
             margin: 0 auto;
         }
 
@@ -267,189 +240,185 @@
         }
 
         .section-header h2 {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 700;
             letter-spacing: -1px;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .section-header p {
             color: var(--text-secondary);
-            font-size: 1.1rem;
-            max-width: 600px;
+            font-size: 1rem;
+            max-width: 500px;
             margin: 0 auto;
         }
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
         }
 
         .feature-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 32px;
-            transition: all 0.3s;
+            border-radius: 12px;
+            padding: 28px;
+            transition: all 0.15s;
         }
 
         .feature-card:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--accent);
-            transform: translateY(-4px);
+            border-color: var(--border-hover);
+            background: var(--bg-elevated);
         }
 
         .feature-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--accent-glow);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             font-size: 1.5rem;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .feature-card h3 {
-            font-size: 1.25rem;
+            font-size: 1rem;
             font-weight: 600;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
 
         .feature-card p {
             color: var(--text-secondary);
-            font-size: 0.95rem;
+            font-size: 0.875rem;
+            line-height: 1.6;
         }
 
         /* How It Works */
         .how-it-works {
-            padding: 120px 20px;
+            padding: 100px 20px;
             background: var(--bg-secondary);
         }
 
         .steps {
             display: flex;
             justify-content: center;
-            gap: 40px;
+            gap: 32px;
             flex-wrap: wrap;
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
         }
 
         .step {
             flex: 1;
-            min-width: 250px;
-            max-width: 300px;
+            min-width: 220px;
+            max-width: 260px;
             text-align: center;
         }
 
         .step-number {
-            width: 60px;
-            height: 60px;
-            background: var(--gradient-gold);
+            width: 48px;
+            height: 48px;
+            background: var(--accent);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.125rem;
             font-weight: 700;
-            color: #000;
-            margin: 0 auto 20px;
+            color: var(--bg-primary);
+            margin: 0 auto 16px;
         }
 
         .step h3 {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .step p {
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            font-size: 0.875rem;
         }
 
         /* Pricing Section */
         .pricing {
-            padding: 120px 20px;
-            max-width: 1000px;
+            padding: 100px 20px;
+            max-width: 900px;
             margin: 0 auto;
         }
 
         .pricing-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
         }
 
         .pricing-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 40px;
+            border-radius: 16px;
+            padding: 36px;
             position: relative;
         }
 
         .pricing-card.featured {
-            border-color: var(--accent);
-            box-shadow: 0 0 40px var(--accent-glow);
+            border-color: var(--accent-muted);
         }
 
         .pricing-badge {
             position: absolute;
-            top: -12px;
+            top: -10px;
             left: 50%;
             transform: translateX(-50%);
-            background: var(--gradient-gold);
-            color: #000;
-            padding: 6px 20px;
+            background: var(--accent);
+            color: var(--bg-primary);
+            padding: 4px 16px;
             border-radius: 100px;
-            font-size: 0.8rem;
-            font-weight: 700;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .pricing-card h3 {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 600;
             margin-bottom: 8px;
         }
 
         .pricing-card .price {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 8px;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 4px;
         }
 
         .pricing-card .price span {
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 400;
             color: var(--text-muted);
         }
 
         .pricing-card .description {
             color: var(--text-secondary);
-            margin-bottom: 30px;
-            font-size: 0.95rem;
+            margin-bottom: 28px;
+            font-size: 0.875rem;
         }
 
         .pricing-features {
             list-style: none;
-            margin-bottom: 30px;
+            margin-bottom: 28px;
         }
 
         .pricing-features li {
-            padding: 10px 0;
+            padding: 8px 0;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             color: var(--text-secondary);
+            font-size: 0.875rem;
         }
 
         .pricing-features li::before {
             content: "✓";
             color: var(--positive);
             font-weight: bold;
+            font-size: 0.8rem;
         }
 
         .pricing-features li.disabled {
@@ -457,45 +426,45 @@
         }
 
         .pricing-features li.disabled::before {
-            content: "✗";
+            content: "—";
             color: var(--text-muted);
         }
 
         .pricing-card .btn {
             width: 100%;
-            padding: 16px;
+            padding: 14px;
         }
 
         /* CTA Section */
         .cta {
-            padding: 120px 20px;
+            padding: 100px 20px;
             text-align: center;
             background: var(--bg-secondary);
             border-top: 1px solid var(--border);
         }
 
         .cta h2 {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 700;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .cta p {
             color: var(--text-secondary);
-            font-size: 1.1rem;
-            margin-bottom: 40px;
+            font-size: 1rem;
+            margin-bottom: 32px;
         }
 
         /* Footer */
         footer {
-            padding: 40px 20px;
+            padding: 32px 20px;
             text-align: center;
             border-top: 1px solid var(--border);
         }
 
         footer p {
             color: var(--text-muted);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         footer a {
@@ -504,21 +473,21 @@
         }
 
         footer a:hover {
-            color: var(--accent);
+            color: var(--text-primary);
         }
 
         /* Responsive */
         @media (max-width: 768px) {
             nav {
-                padding: 15px 20px;
+                padding: 16px 20px;
             }
 
-            .nav-links {
+            .nav-links a:not(.btn) {
                 display: none;
             }
 
             .stats-bar {
-                gap: 30px;
+                gap: 24px;
             }
 
             .stat-value {
@@ -532,8 +501,6 @@
     </style>
 </head>
 <body>
-    <div class="ambient-glow"></div>
-
     <nav>
         <div class="logo">LockTracker</div>
         <div class="nav-links">
@@ -548,7 +515,7 @@
         <div class="hero-badge">
             <span>New</span> Now supporting PrizePicks, FanDuel & DraftKings
         </div>
-        <h1>Stop guessing.<br><span class="highlight">Know your edge.</span></h1>
+        <h1>Stop guessing. Know your edge.</h1>
         <p>LockTracker automatically syncs your bets and shows you what's actually working. Real stats. Real insights. No spreadsheets.</p>
         <div class="hero-buttons">
             <a href="{{ url_for('signup') }}" class="btn btn-primary">Start Tracking Free</a>
@@ -588,27 +555,27 @@
             <div class="feature-card">
                 <div class="feature-icon">⚡</div>
                 <h3>One-Click Sync</h3>
-                <p>Import your entire bet history in seconds. No manual entry, no spreadsheets, no hassle.</p>
+                <p>Import your entire bet history in seconds. No manual entry, no spreadsheets.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">📊</div>
                 <h3>Real Stats That Matter</h3>
-                <p>See your true win rate, ROI, and profit. Break it down by sport, bet type, or sportsbook.</p>
+                <p>See your true win rate, ROI, and profit. Break it down by sport or bet type.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🎯</div>
                 <h3>Find Your Edge</h3>
-                <p>Discover which bets are actually profitable. Double down on what works, cut what doesn't.</p>
+                <p>Discover which bets are profitable. Double down on what works.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🔒</div>
                 <h3>Private & Secure</h3>
-                <p>Your data is encrypted and never shared. Only you can see your betting history.</p>
+                <p>Your data is encrypted and never shared. Only you see your history.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🚀</div>
                 <h3>Auto-Sync (Pro)</h3>
-                <p>Set it and forget it. Your bets sync automatically whenever you visit your sportsbook.</p>
+                <p>Set it and forget it. Bets sync automatically when you visit your sportsbook.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">📱</div>
@@ -645,7 +612,7 @@
     <section class="pricing" id="pricing">
         <div class="section-header">
             <h2>Simple, transparent pricing</h2>
-            <p>Start free. Upgrade when you're ready to go pro.</p>
+            <p>Start free. Upgrade when you're ready.</p>
         </div>
         <div class="pricing-grid">
             <div class="pricing-card">
@@ -663,7 +630,7 @@
                 <a href="{{ url_for('signup') }}" class="btn btn-secondary">Get Started</a>
             </div>
             <div class="pricing-card featured">
-                <div class="pricing-badge">Most Popular</div>
+                <div class="pricing-badge">Popular</div>
                 <h3>Pro</h3>
                 <div class="price">$9<span>/month</span></div>
                 <p class="description">For serious bettors</p>
@@ -683,7 +650,7 @@
     <section class="cta">
         <h2>Ready to know your edge?</h2>
         <p>Join smart bettors who track their performance with LockTracker.</p>
-        <a href="{{ url_for('signup') }}" class="btn btn-primary" style="padding: 18px 40px; font-size: 1.1rem;">Start Tracking Free</a>
+        <a href="{{ url_for('signup') }}" class="btn btn-primary" style="padding: 16px 32px;">Start Tracking Free</a>
     </section>
 
     <footer>
