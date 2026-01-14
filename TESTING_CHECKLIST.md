@@ -1,3 +1,17 @@
+# LockTracker - Testing & Tasks Checklist
+
+---
+
+## Paused Tasks
+
+### Chrome Web Store Listing
+- **Status:** PAUSED - Waiting for valid ID for developer account registration
+- **What's ready:** Store description, privacy policy, image requirements
+- **Files:** `chrome-store/` folder
+- **Resume when:** Have valid ID, go to https://chrome.google.com/webstore/devconsole/register
+
+---
+
 # LockTracker - External Testing Checklist
 
 > Things that need to be tested with real sportsbook accounts.
