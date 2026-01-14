@@ -170,6 +170,20 @@ header {
     border-color: rgba(255, 255, 255, 0.15);
 }
 
+.btn-delete-account {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: var(--radius);
+    transition: all 0.2s ease;
+}
+
+.btn-delete-account:hover {
+    color: var(--negative);
+    background: rgba(244, 63, 94, 0.1);
+}
+
 /* ============================================
    STATS DASHBOARD
    ============================================ */

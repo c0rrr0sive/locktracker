@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Account - LockTracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #050508;
+            --bg-glass: rgba(15, 15, 25, 0.6);
+            --bg-glass-light: rgba(30, 30, 50, 0.4);
+            --bg-input: rgba(0, 0, 0, 0.3);
+            --accent: #0ea5e9;
+            --accent-light: #38bdf8;
+            --accent-dark: #0284c7;
+            --accent-glow: rgba(14, 165, 233, 0.4);
+            --accent-subtle: rgba(14, 165, 233, 0.15);
+            --text-primary: #f0f0f5;
+            --text-secondary: #9898a8;
+            --text-muted: #5a5a6e;
+            --positive: #10b981;
+            --positive-glow: rgba(16, 185, 129, 0.3);
+            --negative: #f43f5e;
+            --negative-glow: rgba(244, 63, 94, 0.3);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --border-accent: rgba(14, 165, 233, 0.3);
+            --blur-amount: 20px;
+            --radius: 12px;
+            --radius-lg: 20px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            background-image:
+                radial-gradient(ellipse 80% 60% at 50% 0%, rgba(244, 63, 94, 0.1), transparent),
+                radial-gradient(ellipse 50% 50% at 80% 80%, rgba(244, 63, 94, 0.05), transparent);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 440px;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .auth-header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+            color: var(--negative);
+        }
+
+        .auth-header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .auth-box {
+            background: var(--bg-glass);
+            backdrop-filter: blur(var(--blur-amount));
+            -webkit-backdrop-filter: blur(var(--blur-amount));
+            border: 1px solid rgba(244, 63, 94, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 36px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(244, 63, 94, 0.3), transparent);
+        }
+
+        .warning-box {
+            background: rgba(244, 63, 94, 0.1);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .warning-box h3 {
+            color: var(--negative);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .warning-box ul {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.7;
+            padding-left: 20px;
+        }
+
+        .warning-box li {
+            margin-bottom: 4px;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--negative);
+            box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.15), 0 0 20px var(--negative-glow);
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .form-group input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        .delete-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--negative), #dc2626);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 20px var(--negative-glow);
+        }
+
+        .delete-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px var(--negative-glow), 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .error-message {
+            background: rgba(244, 63, 94, 0.1);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            color: var(--negative);
+            padding: 14px;
+            border-radius: var(--radius);
+            margin-bottom: 22px;
+            font-size: 0.9rem;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--text-secondary);
+        }
+
+        .account-info {
+            background: var(--bg-glass-light);
+            border-radius: var(--radius);
+            padding: 14px;
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .account-info strong {
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-header">
+            <h1>Delete Account</h1>
+            <p>This action cannot be undone</p>
+        </div>
+
+        <div class="auth-box">
+            {% if error %}
+            <div class="error-message">{{ error }}</div>
+            {% endif %}
+
+            <div class="account-info">
+                Logged in as: <strong>{{ user.email }}</strong>
+            </div>
+
+            <div class="warning-box">
+                <h3>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                        <line x1="12" y1="9" x2="12" y2="13"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                    This will permanently delete:
+                </h3>
+                <ul>
+                    <li>All your betting history and statistics</li>
+                    <li>Your account and login credentials</li>
+                    <li>Any active Pro subscription (will be cancelled)</li>
+                    <li>All data associated with your account</li>
+                </ul>
+            </div>
+
+            <form method="POST">
+                <div class="form-group">
+                    <label for="confirmation">Type "delete my account" to confirm</label>
+                    <input type="text" id="confirmation" name="confirmation" required placeholder="delete my account" autocomplete="off">
+                    <p class="form-hint">This action is permanent and cannot be reversed.</p>
+                </div>
+                <button type="submit" class="delete-btn">Permanently Delete My Account</button>
+            </form>
+        </div>
+
+        <a href="{{ url_for('dashboard') }}" class="back-link">&larr; Back to dashboard</a>
+    </div>
+</body>
+</html>

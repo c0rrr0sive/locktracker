@@ -833,6 +833,75 @@ def manage_subscription():
         print(f"Portal error: {e}")
         return redirect(url_for('pricing'))
 
+# ==============================================
+# ACCOUNT MANAGEMENT
+# ==============================================
+
+@app.route('/delete-account', methods=['GET', 'POST'])
+@login_required
+def delete_account():
+    """Delete user account and all associated data"""
+    user = get_current_user()
+
+    if request.method == 'POST':
+        # Verify the confirmation text
+        confirmation = request.form.get('confirmation', '').strip()
+        if confirmation.lower() != 'delete my account':
+            return render_template('delete_account.html', user=user,
+                                 error='Please type "delete my account" to confirm.')
+
+        try:
+            # 1. Cancel Stripe subscription if exists
+            try:
+                sub_response = supabase_admin.table('subscriptions').select('stripe_subscription_id, stripe_customer_id').eq('user_id', user['id']).execute()
+                if sub_response.data and sub_response.data[0].get('stripe_subscription_id'):
+                    subscription_id = sub_response.data[0]['stripe_subscription_id']
+                    if STRIPE_SECRET_KEY:
+                        try:
+                            stripe.Subscription.delete(subscription_id)
+                            print(f"Cancelled Stripe subscription {subscription_id}")
+                        except Exception as e:
+                            print(f"Error cancelling Stripe subscription: {e}")
+            except Exception as e:
+                print(f"Error fetching subscription: {e}")
+
+            # 2. Delete all user's bets
+            try:
+                supabase_admin.table('bets').delete().eq('user_id', user['id']).execute()
+                print(f"Deleted bets for user {user['id']}")
+            except Exception as e:
+                print(f"Error deleting bets: {e}")
+
+            # 3. Delete subscription record
+            try:
+                supabase_admin.table('subscriptions').delete().eq('user_id', user['id']).execute()
+                print(f"Deleted subscription record for user {user['id']}")
+            except Exception as e:
+                print(f"Error deleting subscription record: {e}")
+
+            # 4. Delete the auth user (requires service role key)
+            try:
+                supabase_admin.auth.admin.delete_user(user['id'])
+                print(f"Deleted auth user {user['id']}")
+            except Exception as e:
+                print(f"Error deleting auth user: {e}")
+
+            # 5. Clear session and redirect
+            session.clear()
+            return redirect(url_for('account_deleted'))
+
+        except Exception as e:
+            print(f"Error during account deletion: {e}")
+            return render_template('delete_account.html', user=user,
+                                 error='An error occurred. Please try again or contact support.')
+
+    return render_template('delete_account.html', user=user)
+
+@app.route('/account-deleted')
+def account_deleted():
+    """Confirmation page after account deletion"""
+    return render_template('account_deleted.html')
+
 if __name__ == '__main__':
     print("=" * 50)
     print("LOCKTRACKER - Starting up!")
