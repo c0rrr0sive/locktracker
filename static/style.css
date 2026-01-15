@@ -420,25 +420,24 @@ header {
     background: var(--bg-glass-light);
     border: 1px solid var(--border-glass);
     border-radius: var(--radius);
-    padding: 20px;
-    min-height: 250px;
+    padding: 16px;
+    height: 200px;
 }
 
 .chart-card.large {
     grid-column: span 2;
-    min-height: 300px;
+    height: 220px;
 }
 
 .chart-card h3 {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 500;
     color: var(--text-secondary);
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .chart-card canvas {
-    width: 100% !important;
-    height: calc(100% - 30px) !important;
+    max-height: 160px !important;
 }
 
 @media (max-width: 768px) {
