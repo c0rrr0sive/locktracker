@@ -35,6 +35,13 @@
             </div>
         </header>
 
+        <!-- Email Verification Banner -->
+        {% if not email_confirmed %}
+        <div class="email-banner">
+            <span>Please verify your email address to secure your account.</span>
+        </div>
+        {% endif %}
+
         <!-- Usage Banner -->
         {% if usage.tier == 'free' %}
         <div class="usage-banner {% if usage.at_limit %}at-limit{% elif usage.remaining <= 3 %}near-limit{% endif %}">
@@ -254,6 +261,7 @@
                             <input type="hidden" name="result" value="push">
                             <button type="submit" class="btn btn-push">Push</button>
                         </form>
+                        <a href="{{ url_for('edit_bet', bet_id=bet.id) }}" class="btn btn-edit">Edit</a>
                         <form action="/delete/{{ bet.id }}" method="POST" class="inline-form">
                             <button type="submit" class="btn btn-delete">×</button>
                         </form>
@@ -266,17 +274,46 @@
 
         <!-- Bet History -->
         <section class="bets-section">
-            <h2>Bet History</h2>
+            <div class="bets-header">
+                <h2>Bet History</h2>
+                <div class="bet-filters">
+                    <select id="filter-sport" class="filter-select">
+                        <option value="">All Sports</option>
+                        <option value="NBA">NBA</option>
+                        <option value="NFL">NFL</option>
+                        <option value="MLB">MLB</option>
+                        <option value="NHL">NHL</option>
+                        <option value="NCAAB">NCAAB</option>
+                        <option value="NCAAF">NCAAF</option>
+                        <option value="Soccer">Soccer</option>
+                        <option value="UFC">UFC</option>
+                    </select>
+                    <select id="filter-result" class="filter-select">
+                        <option value="">All Results</option>
+                        <option value="win">Wins</option>
+                        <option value="loss">Losses</option>
+                        <option value="push">Pushes</option>
+                    </select>
+                    <select id="filter-sportsbook" class="filter-select">
+                        <option value="">All Sportsbooks</option>
+                        <option value="FanDuel">FanDuel</option>
+                        <option value="DraftKings">DraftKings</option>
+                        <option value="PrizePicks">PrizePicks</option>
+                        <option value="BetMGM">BetMGM</option>
+                        <option value="Caesars">Caesars</option>
+                    </select>
+                </div>
+            </div>
             {% if bets %}
-            <div class="bets-list">
+            <div class="bets-list" id="bets-list">
                 {% for bet in bets %}
                 {% if bet.result != 'pending' %}
-                <div class="bet-card {{ bet.result }}">
+                <div class="bet-card {{ bet.result }}" data-sport="{{ bet.sport }}" data-result="{{ bet.result }}" data-sportsbook="{{ bet.sportsbook }}">
                     <div class="bet-info">
                         <span class="bet-sport">{{ bet.sport }}</span>
                         <span class="bet-matchup">{{ bet.matchup }}</span>
                         <span class="bet-description">{{ bet.bet_description }}</span>
-                        <span class="bet-details">{{ bet.odds }} · ${{ "%.2f"|format(bet.amount) }}</span>
+                        <span class="bet-details">{{ bet.odds }} · ${{ "%.2f"|format(bet.amount) }}{% if bet.sportsbook %} · {{ bet.sportsbook }}{% endif %}</span>
                     </div>
                     <div class="bet-result">
                         <span class="result-badge {{ bet.result }}">{{ bet.result }}</span>
@@ -284,9 +321,12 @@
                             {{ '+' if bet.profit >= 0 else '' }}${{ "%.2f"|format(bet.profit) }}
                         </span>
                     </div>
-                    <form action="/delete/{{ bet.id }}" method="POST" class="inline-form">
-                        <button type="submit" class="btn btn-delete">×</button>
-                    </form>
+                    <div class="bet-card-actions">
+                        <a href="{{ url_for('edit_bet', bet_id=bet.id) }}" class="btn btn-edit">Edit</a>
+                        <form action="/delete/{{ bet.id }}" method="POST" class="inline-form">
+                            <button type="submit" class="btn btn-delete">×</button>
+                        </form>
+                    </div>
                 </div>
                 {% endif %}
                 {% endfor %}
@@ -300,9 +340,44 @@
 
         <!-- Footer -->
         <footer>
-            <a href="{{ url_for('landing') }}">View Landing Page</a> · <a href="{{ url_for('privacy') }}">Privacy Policy</a>
+            <a href="{{ url_for('landing') }}">View Landing Page</a> · <a href="{{ url_for('terms') }}">Terms of Service</a> · <a href="{{ url_for('privacy') }}">Privacy Policy</a>
         </footer>
     </div>
+
+    <script>
+    // Bet History Filters
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterSport = document.getElementById('filter-sport');
+        const filterResult = document.getElementById('filter-result');
+        const filterSportsbook = document.getElementById('filter-sportsbook');
+        const betsList = document.getElementById('bets-list');
+
+        function applyFilters() {
+            if (!betsList) return;
+
+            const sport = filterSport.value;
+            const result = filterResult.value;
+            const sportsbook = filterSportsbook.value;
+
+            const cards = betsList.querySelectorAll('.bet-card');
+            cards.forEach(card => {
+                const cardSport = card.dataset.sport;
+                const cardResult = card.dataset.result;
+                const cardSportsbook = card.dataset.sportsbook || '';
+
+                const matchSport = !sport || cardSport === sport;
+                const matchResult = !result || cardResult === result;
+                const matchSportsbook = !sportsbook || cardSportsbook === sportsbook;
+
+                card.style.display = (matchSport && matchResult && matchSportsbook) ? '' : 'none';
+            });
+        }
+
+        if (filterSport) filterSport.addEventListener('change', applyFilters);
+        if (filterResult) filterResult.addEventListener('change', applyFilters);
+        if (filterSportsbook) filterSportsbook.addEventListener('change', applyFilters);
+    });
+    </script>
 
     <script>
     // Chart.js Analytics

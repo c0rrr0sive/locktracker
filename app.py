@@ -342,6 +342,16 @@ def dashboard():
         'at_limit': not can_add
     }
 
+    # Check email confirmation status
+    email_confirmed = True  # Default to true
+    try:
+        if 'access_token' in session:
+            user_response = supabase.auth.get_user(session['access_token'])
+            if user_response and user_response.user:
+                email_confirmed = user_response.user.email_confirmed_at is not None
+    except:
+        pass  # If we can't check, assume confirmed
+
     # Check for limit error from redirect
     error = request.args.get('error')
 
@@ -352,6 +362,7 @@ def dashboard():
                          category_stats=category_stats,
                          user=user,
                          usage=usage,
+                         email_confirmed=email_confirmed,
                          error=error)
 
 @app.route('/add', methods=['POST'])
@@ -430,6 +441,56 @@ def delete_bet(bet_id):
         print(f"Error deleting bet: {e}")
 
     return redirect(url_for('dashboard'))
+
+@app.route('/edit/<int:bet_id>', methods=['GET', 'POST'])
+@login_required
+def edit_bet(bet_id):
+    """Edit an existing bet"""
+    user = get_current_user()
+
+    try:
+        # Get the bet
+        response = supabase_admin.table('bets').select('*').eq('id', bet_id).eq('user_id', user['id']).execute()
+
+        if not response.data:
+            return redirect(url_for('dashboard'))
+
+        bet = response.data[0]
+
+        if request.method == 'POST':
+            # Update the bet with new values
+            result = request.form.get('result', bet['result'])
+            odds = int(request.form.get('odds', bet['odds']))
+            amount = float(request.form.get('amount', bet['amount']))
+
+            # Recalculate profit if result is not pending
+            profit = calculate_profit(odds, amount, result) if result != 'pending' else 0
+
+            supabase_admin.table('bets').update({
+                'date': request.form.get('date', bet['date']),
+                'sport': request.form.get('sport', bet['sport']),
+                'matchup': request.form.get('matchup', bet['matchup']),
+                'bet_type': request.form.get('bet_type', bet['bet_type']),
+                'bet_description': request.form.get('bet_description', bet['bet_description']),
+                'odds': odds,
+                'amount': amount,
+                'sportsbook': request.form.get('sportsbook', bet['sportsbook']),
+                'result': result,
+                'profit': profit
+            }).eq('id', bet_id).eq('user_id', user['id']).execute()
+
+            return redirect(url_for('dashboard'))
+
+        return render_template('edit_bet.html', bet=bet, user=user)
+
+    except Exception as e:
+        print(f"Error editing bet: {e}")
+        return redirect(url_for('dashboard'))
+
+@app.route('/terms')
+def terms():
+    """Terms of Service page"""
+    return render_template('terms.html')
 
 # ==============================================
 # API ENDPOINTS (for browser extension)

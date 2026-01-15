@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Bet - LockTracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-top">
+                <div class="header-logo">
+                    <div>
+                        <h1>LockTracker</h1>
+                        <p class="subtitle">Edit Bet</p>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <a href="{{ url_for('dashboard') }}" class="btn-logout">Back to Dashboard</a>
+                </div>
+            </div>
+        </header>
+
+        <section class="add-bet-section">
+            <h2>Edit Bet Details</h2>
+            <form action="{{ url_for('edit_bet', bet_id=bet.id) }}" method="POST" class="bet-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" name="date" value="{{ bet.date }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="sport">Sport</label>
+                        <select id="sport" name="sport" required>
+                            <option value="NBA" {{ 'selected' if bet.sport == 'NBA' }}>NBA</option>
+                            <option value="NFL" {{ 'selected' if bet.sport == 'NFL' }}>NFL</option>
+                            <option value="MLB" {{ 'selected' if bet.sport == 'MLB' }}>MLB</option>
+                            <option value="NHL" {{ 'selected' if bet.sport == 'NHL' }}>NHL</option>
+                            <option value="NCAAB" {{ 'selected' if bet.sport == 'NCAAB' }}>NCAAB</option>
+                            <option value="NCAAF" {{ 'selected' if bet.sport == 'NCAAF' }}>NCAAF</option>
+                            <option value="Soccer" {{ 'selected' if bet.sport == 'Soccer' }}>Soccer</option>
+                            <option value="UFC" {{ 'selected' if bet.sport == 'UFC' }}>UFC</option>
+                            <option value="Other" {{ 'selected' if bet.sport == 'Other' }}>Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="bet_type">Bet Type</label>
+                        <select id="bet_type" name="bet_type" required>
+                            <option value="Spread" {{ 'selected' if bet.bet_type == 'Spread' }}>Spread</option>
+                            <option value="Moneyline" {{ 'selected' if bet.bet_type == 'Moneyline' }}>Moneyline</option>
+                            <option value="Total" {{ 'selected' if bet.bet_type == 'Total' }}>Total (O/U)</option>
+                            <option value="Player Prop" {{ 'selected' if bet.bet_type == 'Player Prop' }}>Player Prop</option>
+                            <option value="Game Prop" {{ 'selected' if bet.bet_type == 'Game Prop' }}>Game Prop</option>
+                            <option value="Parlay" {{ 'selected' if bet.bet_type == 'Parlay' }}>Parlay</option>
+                            <option value="Teaser" {{ 'selected' if bet.bet_type == 'Teaser' }}>Teaser</option>
+                            <option value="Futures" {{ 'selected' if bet.bet_type == 'Futures' }}>Futures</option>
+                            <option value="Other" {{ 'selected' if bet.bet_type == 'Other' }}>Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="matchup">Matchup</label>
+                        <input type="text" id="matchup" name="matchup" value="{{ bet.matchup }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bet_description">Pick/Description</label>
+                        <input type="text" id="bet_description" name="bet_description" value="{{ bet.bet_description }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sportsbook">Sportsbook</label>
+                        <select id="sportsbook" name="sportsbook">
+                            <option value="" {{ 'selected' if not bet.sportsbook }}>Select...</option>
+                            <option value="FanDuel" {{ 'selected' if bet.sportsbook == 'FanDuel' }}>FanDuel</option>
+                            <option value="DraftKings" {{ 'selected' if bet.sportsbook == 'DraftKings' }}>DraftKings</option>
+                            <option value="BetMGM" {{ 'selected' if bet.sportsbook == 'BetMGM' }}>BetMGM</option>
+                            <option value="Caesars" {{ 'selected' if bet.sportsbook == 'Caesars' }}>Caesars</option>
+                            <option value="PrizePicks" {{ 'selected' if bet.sportsbook == 'PrizePicks' }}>PrizePicks</option>
+                            <option value="Underdog" {{ 'selected' if bet.sportsbook == 'Underdog' }}>Underdog</option>
+                            <option value="Other" {{ 'selected' if bet.sportsbook == 'Other' }}>Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="odds">Odds</label>
+                        <input type="number" id="odds" name="odds" value="{{ bet.odds }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Wager ($)</label>
+                        <input type="number" id="amount" name="amount" step="0.01" value="{{ bet.amount }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="result">Result</label>
+                        <select id="result" name="result">
+                            <option value="pending" {{ 'selected' if bet.result == 'pending' }}>Pending</option>
+                            <option value="win" {{ 'selected' if bet.result == 'win' }}>Win</option>
+                            <option value="loss" {{ 'selected' if bet.result == 'loss' }}>Loss</option>
+                            <option value="push" {{ 'selected' if bet.result == 'push' }}>Push</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </section>
+    </div>
+</body>
+</html>
