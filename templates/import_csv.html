@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import Bets - LockTracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .import-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .import-header {
+            margin-bottom: 32px;
+        }
+
+        .import-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-light), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .import-header p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .import-box {
+            background: var(--bg-glass);
+            backdrop-filter: blur(var(--blur-amount));
+            -webkit-backdrop-filter: blur(var(--blur-amount));
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--border-glass);
+            border-radius: var(--radius);
+            padding: 40px 20px;
+            text-align: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent);
+            background: var(--accent-subtle);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--accent);
+            background: var(--accent-subtle);
+        }
+
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 16px;
+            color: var(--text-muted);
+        }
+
+        .upload-area h3 {
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        .upload-area p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .selected-file {
+            margin-top: 16px;
+            padding: 12px;
+            background: var(--bg-glass-light);
+            border-radius: var(--radius);
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .selected-file.visible {
+            display: flex;
+        }
+
+        .file-name {
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .remove-file {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px 8px;
+            font-size: 1.2rem;
+        }
+
+        .remove-file:hover {
+            color: var(--negative);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .format-info {
+            background: var(--bg-glass);
+            backdrop-filter: blur(var(--blur-amount));
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+        }
+
+        .format-info h2 {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .format-info p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .format-info code {
+            display: block;
+            background: var(--bg-glass-light);
+            padding: 12px;
+            border-radius: var(--radius);
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--positive);
+            padding: 16px;
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+        }
+
+        .error-message {
+            background: rgba(244, 63, 94, 0.1);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            color: var(--negative);
+            padding: 16px;
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+        }
+
+        .error-list {
+            margin-top: 12px;
+            padding-left: 20px;
+            font-size: 0.85rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="import-container">
+        <a href="{{ url_for('settings') }}" class="back-link">&larr; Back to Settings</a>
+
+        <div class="import-header">
+            <h1>Import Bets</h1>
+            <p>Upload a CSV file to import your betting history</p>
+        </div>
+
+        {% if success %}
+        <div class="success-message">
+            {{ message }}
+            {% if errors %}
+            <ul class="error-list">
+                {% for err in errors %}
+                <li>{{ err }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <div class="error-message">{{ error }}</div>
+        {% endif %}
+
+        <div class="import-box">
+            <form method="POST" enctype="multipart/form-data" id="import-form">
+                <div class="upload-area" id="upload-area">
+                    <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    <h3>Drop your CSV file here</h3>
+                    <p>or click to browse</p>
+                </div>
+                <input type="file" name="file" id="file-input" class="file-input" accept=".csv">
+
+                <div class="selected-file" id="selected-file">
+                    <span class="file-name" id="file-name"></span>
+                    <button type="button" class="remove-file" id="remove-file">&times;</button>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submit-btn" disabled>Import Bets</button>
+            </form>
+        </div>
+
+        <div class="format-info">
+            <h2>CSV Format</h2>
+            <p>Your CSV should have these columns (order doesn't matter):</p>
+            <code>Date,Sport,Matchup,Bet Type,Description,Odds,Amount,Result,Sportsbook</code>
+            <p style="margin-top: 16px;">Example row:</p>
+            <code>2025-01-10,NBA,Lakers vs Celtics,Spread,Lakers -3.5,-110,100,win,FanDuel</code>
+            <p style="margin-top: 16px; font-size: 0.8rem; color: var(--text-muted);">
+                Result should be: win, loss, push, or pending. Odds should be American format (e.g., -110, +150).
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const uploadArea = document.getElementById('upload-area');
+        const fileInput = document.getElementById('file-input');
+        const selectedFile = document.getElementById('selected-file');
+        const fileName = document.getElementById('file-name');
+        const removeFile = document.getElementById('remove-file');
+        const submitBtn = document.getElementById('submit-btn');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                showFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length) {
+                showFile(fileInput.files[0]);
+            }
+        });
+
+        removeFile.addEventListener('click', () => {
+            fileInput.value = '';
+            selectedFile.classList.remove('visible');
+            submitBtn.disabled = true;
+        });
+
+        function showFile(file) {
+            fileName.textContent = file.name;
+            selectedFile.classList.add('visible');
+            submitBtn.disabled = false;
+        }
+    </script>
+</body>
+</html>

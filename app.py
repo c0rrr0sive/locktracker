@@ -173,6 +173,112 @@ def reset_password():
     Password update is handled client-side via Supabase JS SDK."""
     return render_template('reset_password.html')
 
+@app.route('/resend-verification', methods=['POST'])
+@login_required
+def resend_verification():
+    """Resend email verification"""
+    user = get_current_user()
+    try:
+        supabase.auth.resend(type='signup', email=user['email'])
+        return jsonify({'success': True, 'message': 'Verification email sent!'})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/settings')
+@login_required
+def settings():
+    """User settings page"""
+    user = get_current_user()
+    tier = get_user_tier(user['id'])
+
+    # Check email confirmation
+    email_confirmed = True
+    try:
+        if 'access_token' in session:
+            user_response = supabase.auth.get_user(session['access_token'])
+            if user_response and user_response.user:
+                email_confirmed = user_response.user.email_confirmed_at is not None
+    except:
+        pass
+
+    return render_template('settings.html', user=user, tier=tier, email_confirmed=email_confirmed)
+
+@app.route('/import-csv', methods=['GET', 'POST'])
+@login_required
+def import_csv():
+    """Import bets from CSV file"""
+    user = get_current_user()
+
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return render_template('import_csv.html', user=user, error='No file uploaded')
+
+        file = request.files['file']
+        if file.filename == '':
+            return render_template('import_csv.html', user=user, error='No file selected')
+
+        if not file.filename.endswith('.csv'):
+            return render_template('import_csv.html', user=user, error='Please upload a CSV file')
+
+        try:
+            # Read CSV
+            stream = io.StringIO(file.stream.read().decode('utf-8'))
+            reader = csv.DictReader(stream)
+
+            imported = 0
+            errors = []
+
+            for i, row in enumerate(reader):
+                try:
+                    # Parse row - flexible column matching
+                    date = row.get('Date', row.get('date', datetime.now().strftime('%Y-%m-%d')))
+                    sport = row.get('Sport', row.get('sport', 'Other'))
+                    matchup = row.get('Matchup', row.get('matchup', 'Unknown'))
+                    bet_type = row.get('Bet Type', row.get('bet_type', 'Other'))
+                    description = row.get('Description', row.get('bet_description', row.get('Pick', '')))
+                    odds = int(row.get('Odds', row.get('odds', -110)))
+                    amount = float(row.get('Amount', row.get('amount', row.get('Wager', 0))))
+                    result = row.get('Result', row.get('result', 'pending')).lower()
+                    sportsbook = row.get('Sportsbook', row.get('sportsbook', ''))
+
+                    # Validate result
+                    if result not in ['pending', 'win', 'loss', 'push']:
+                        result = 'pending'
+
+                    # Calculate profit
+                    profit = calculate_profit(odds, amount, result) if result != 'pending' else 0
+
+                    # Insert bet
+                    supabase_admin.table('bets').insert({
+                        'user_id': user['id'],
+                        'date': date,
+                        'sport': sport,
+                        'matchup': matchup,
+                        'bet_type': bet_type,
+                        'bet_description': description,
+                        'odds': odds,
+                        'amount': amount,
+                        'result': result,
+                        'profit': profit,
+                        'sportsbook': sportsbook
+                    }).execute()
+
+                    imported += 1
+
+                except Exception as e:
+                    errors.append(f"Row {i+2}: {str(e)}")
+
+            message = f'Successfully imported {imported} bets.'
+            if errors:
+                message += f' {len(errors)} rows had errors.'
+
+            return render_template('import_csv.html', user=user, success=True, message=message, errors=errors[:5])
+
+        except Exception as e:
+            return render_template('import_csv.html', user=user, error=f'Error reading file: {str(e)}')
+
+    return render_template('import_csv.html', user=user)
+
 # ==============================================
 # HELPER FUNCTIONS
 # ==============================================
