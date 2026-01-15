@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
@@ -113,6 +114,38 @@
             </div>
         </section>
         {% endif %}
+
+        <!-- Analytics Section -->
+        <section class="analytics-section">
+            <div class="analytics-header">
+                <h2>Analytics</h2>
+                <div class="date-filters">
+                    <button class="filter-btn" data-days="7">7D</button>
+                    <button class="filter-btn active" data-days="30">30D</button>
+                    <button class="filter-btn" data-days="90">90D</button>
+                    <button class="filter-btn" data-days="">All</button>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-card large">
+                    <h3>Profit Over Time</h3>
+                    <canvas id="profitChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Daily Profit/Loss</h3>
+                    <canvas id="dailyChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Profit by Sport</h3>
+                    <canvas id="sportChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Profit by Bet Type</h3>
+                    <canvas id="betTypeChart"></canvas>
+                </div>
+            </div>
+        </section>
 
         <!-- Add New Bet Form -->
         <section class="add-bet-section">
@@ -270,5 +303,219 @@
             <a href="{{ url_for('landing') }}">View Landing Page</a> · <a href="{{ url_for('privacy') }}">Privacy Policy</a>
         </footer>
     </div>
+
+    <script>
+    // Chart.js Analytics
+    document.addEventListener('DOMContentLoaded', function() {
+        // Theme colors
+        const colors = {
+            positive: '#10b981',
+            negative: '#f43f5e',
+            accent: '#0ea5e9',
+            text: '#9898a8',
+            grid: 'rgba(255, 255, 255, 0.08)'
+        };
+
+        // Chart instances
+        let profitChart, dailyChart, sportChart, betTypeChart;
+
+        // Default Chart.js settings
+        Chart.defaults.color = colors.text;
+        Chart.defaults.borderColor = colors.grid;
+        Chart.defaults.font.family = "'Inter', sans-serif";
+
+        // Fetch and render charts
+        async function loadCharts(days = 30) {
+            const url = days ? `/api/analytics?days=${days}` : '/api/analytics';
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                renderCharts(data);
+            } catch (error) {
+                console.error('Failed to load analytics:', error);
+            }
+        }
+
+        function renderCharts(data) {
+            // Destroy existing charts
+            if (profitChart) profitChart.destroy();
+            if (dailyChart) dailyChart.destroy();
+            if (sportChart) sportChart.destroy();
+            if (betTypeChart) betTypeChart.destroy();
+
+            // 1. Profit Over Time (Line Chart)
+            const profitCtx = document.getElementById('profitChart').getContext('2d');
+            const gradient = profitCtx.createLinearGradient(0, 0, 0, 300);
+            const lastValue = data.cumulative_profit[data.cumulative_profit.length - 1] || 0;
+            const lineColor = lastValue >= 0 ? colors.positive : colors.negative;
+            gradient.addColorStop(0, lastValue >= 0 ? 'rgba(16, 185, 129, 0.3)' : 'rgba(244, 63, 94, 0.3)');
+            gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+            profitChart = new Chart(profitCtx, {
+                type: 'line',
+                data: {
+                    labels: data.dates,
+                    datasets: [{
+                        label: 'Cumulative Profit',
+                        data: data.cumulative_profit,
+                        borderColor: lineColor,
+                        backgroundColor: gradient,
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: data.dates.length > 30 ? 0 : 3,
+                        pointHoverRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `$${ctx.parsed.y.toFixed(2)}`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: {
+                            grid: { color: colors.grid },
+                            ticks: { callback: (v) => '$' + v }
+                        }
+                    }
+                }
+            });
+
+            // 2. Daily Profit/Loss (Bar Chart)
+            const dailyCtx = document.getElementById('dailyChart').getContext('2d');
+            const barColors = data.daily_profit.map(v => v >= 0 ? colors.positive : colors.negative);
+
+            dailyChart = new Chart(dailyCtx, {
+                type: 'bar',
+                data: {
+                    labels: data.dates,
+                    datasets: [{
+                        label: 'Daily P/L',
+                        data: data.daily_profit,
+                        backgroundColor: barColors,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `$${ctx.parsed.y.toFixed(2)}`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: {
+                            grid: { color: colors.grid },
+                            ticks: { callback: (v) => '$' + v }
+                        }
+                    }
+                }
+            });
+
+            // 3. Profit by Sport (Horizontal Bar)
+            const sportCtx = document.getElementById('sportChart').getContext('2d');
+            const sportLabels = Object.keys(data.by_sport);
+            const sportProfits = sportLabels.map(s => data.by_sport[s].profit);
+            const sportColors = sportProfits.map(v => v >= 0 ? colors.positive : colors.negative);
+
+            sportChart = new Chart(sportCtx, {
+                type: 'bar',
+                data: {
+                    labels: sportLabels,
+                    datasets: [{
+                        label: 'Profit',
+                        data: sportProfits,
+                        backgroundColor: sportColors,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `$${ctx.parsed.x.toFixed(2)}`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: colors.grid },
+                            ticks: { callback: (v) => '$' + v }
+                        },
+                        y: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // 4. Profit by Bet Type (Horizontal Bar)
+            const betTypeCtx = document.getElementById('betTypeChart').getContext('2d');
+            const betTypeLabels = Object.keys(data.by_bet_type);
+            const betTypeProfits = betTypeLabels.map(t => data.by_bet_type[t].profit);
+            const betTypeColors = betTypeProfits.map(v => v >= 0 ? colors.positive : colors.negative);
+
+            betTypeChart = new Chart(betTypeCtx, {
+                type: 'bar',
+                data: {
+                    labels: betTypeLabels,
+                    datasets: [{
+                        label: 'Profit',
+                        data: betTypeProfits,
+                        backgroundColor: betTypeColors,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `$${ctx.parsed.x.toFixed(2)}`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: colors.grid },
+                            ticks: { callback: (v) => '$' + v }
+                        },
+                        y: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // Date filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const days = this.dataset.days;
+                loadCharts(days ? parseInt(days) : null);
+            });
+        });
+
+        // Initial load
+        loadCharts(30);
+    });
+    </script>
 </body>
 </html>

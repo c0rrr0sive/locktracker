@@ -6,7 +6,7 @@ A web app to track your sports bets with user authentication via Supabase.
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, Response
 from flask_cors import CORS
 from supabase import create_client
-from datetime import datetime
+from datetime import datetime, timedelta
 from functools import wraps
 import os
 import stripe
@@ -594,6 +594,100 @@ def api_usage():
 
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/api/analytics')
+@login_required
+def api_analytics():
+    """Get analytics data for charts with date filtering"""
+    user = get_current_user()
+
+    # Get date range from query params
+    days = request.args.get('days', type=int)
+    start_date = request.args.get('start')
+    end_date = request.args.get('end')
+
+    # Get all user bets
+    bets = get_user_bets(user['id'])
+    settled_bets = [b for b in bets if b['result'] != 'pending']
+
+    # Filter by date range
+    if days:
+        cutoff = (datetime.now() - timedelta(days=days)).strftime('%Y-%m-%d')
+        settled_bets = [b for b in settled_bets if b['date'] >= cutoff]
+    elif start_date and end_date:
+        settled_bets = [b for b in settled_bets if start_date <= b['date'] <= end_date]
+
+    # Sort by date
+    settled_bets.sort(key=lambda x: x['date'])
+
+    # Calculate daily profits
+    daily_data = {}
+    for bet in settled_bets:
+        date = bet['date']
+        if date not in daily_data:
+            daily_data[date] = {'profit': 0, 'wins': 0, 'losses': 0}
+        daily_data[date]['profit'] += bet['profit']
+        if bet['result'] == 'win':
+            daily_data[date]['wins'] += 1
+        elif bet['result'] == 'loss':
+            daily_data[date]['losses'] += 1
+
+    # Build arrays for charts
+    dates = sorted(daily_data.keys())
+    daily_profit = [round(daily_data[d]['profit'], 2) for d in dates]
+
+    # Calculate cumulative profit
+    cumulative = []
+    running_total = 0
+    for p in daily_profit:
+        running_total += p
+        cumulative.append(round(running_total, 2))
+
+    # Calculate by sport
+    by_sport = {}
+    for bet in settled_bets:
+        sport = bet['sport']
+        if sport not in by_sport:
+            by_sport[sport] = {'profit': 0, 'wins': 0, 'losses': 0, 'count': 0}
+        by_sport[sport]['profit'] += bet['profit']
+        by_sport[sport]['count'] += 1
+        if bet['result'] == 'win':
+            by_sport[sport]['wins'] += 1
+        elif bet['result'] == 'loss':
+            by_sport[sport]['losses'] += 1
+
+    # Round profits and calculate win rates
+    for sport in by_sport:
+        by_sport[sport]['profit'] = round(by_sport[sport]['profit'], 2)
+        total = by_sport[sport]['wins'] + by_sport[sport]['losses']
+        by_sport[sport]['win_rate'] = round(by_sport[sport]['wins'] / total * 100, 1) if total > 0 else 0
+
+    # Calculate by bet type
+    by_bet_type = {}
+    for bet in settled_bets:
+        bt = bet['bet_type']
+        if bt not in by_bet_type:
+            by_bet_type[bt] = {'profit': 0, 'wins': 0, 'losses': 0, 'count': 0}
+        by_bet_type[bt]['profit'] += bet['profit']
+        by_bet_type[bt]['count'] += 1
+        if bet['result'] == 'win':
+            by_bet_type[bt]['wins'] += 1
+        elif bet['result'] == 'loss':
+            by_bet_type[bt]['losses'] += 1
+
+    # Round profits
+    for bt in by_bet_type:
+        by_bet_type[bt]['profit'] = round(by_bet_type[bt]['profit'], 2)
+        total = by_bet_type[bt]['wins'] + by_bet_type[bt]['losses']
+        by_bet_type[bt]['win_rate'] = round(by_bet_type[bt]['wins'] / total * 100, 1) if total > 0 else 0
+
+    return jsonify({
+        'dates': dates,
+        'daily_profit': daily_profit,
+        'cumulative_profit': cumulative,
+        'by_sport': by_sport,
+        'by_bet_type': by_bet_type
+    })
 
 # ==============================================
 # STRIPE PAYMENT ROUTES
