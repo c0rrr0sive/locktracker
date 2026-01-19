@@ -69,6 +69,18 @@
         }
 
         .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 36px;
+            width: auto;
+        }
+
+        .logo-text {
             font-size: 1.25rem;
             font-weight: 700;
             letter-spacing: -0.5px;
@@ -179,6 +191,17 @@
             font-weight: 600;
         }
 
+        .hero-logo {
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-logo img {
+            height: 80px;
+            width: auto;
+        }
+
         .hero h1 {
             font-size: clamp(2.5rem, 7vw, 4.5rem);
             font-weight: 800;
@@ -286,6 +309,16 @@
             background: var(--bg-glass-light);
             border: 1px solid var(--border-glass);
             border-radius: var(--radius);
+        }
+
+        .platform-logos span.coming-soon {
+            opacity: 0.6;
+        }
+
+        .platform-logos span small {
+            font-size: 0.7rem;
+            font-weight: 400;
+            color: var(--text-muted);
         }
 
         /* Features Section */
@@ -655,7 +688,9 @@
 </head>
 <body>
     <nav>
-        <div class="logo">LockTracker</div>
+        <a href="{{ url_for('home') }}" class="logo">
+            <img src="{{ url_for('static', filename='images/LockTracker logo with growth arrow.png') }}" alt="LockTracker">
+        </a>
         <div class="nav-links">
             <a href="#features">Features</a>
             <a href="#pricing">Pricing</a>
@@ -665,23 +700,23 @@
     </nav>
 
     <section class="hero">
-        <div class="hero-badge">
-            <span>New</span> Now supporting PrizePicks, FanDuel & DraftKings
+        <div class="hero-logo">
+            <img src="{{ url_for('static', filename='images/LockTracker logo with growth arrow.png') }}" alt="LockTracker">
         </div>
         <h1>Stop guessing.<br><span class="gradient">Know your edge.</span></h1>
-        <p>LockTracker automatically syncs your bets and shows you what's actually working. Real stats. Real insights. No spreadsheets.</p>
+        <p>Track every bet. See what's actually working. Make smarter plays backed by your real data — not hunches.</p>
         <div class="hero-buttons">
             <a href="{{ url_for('signup') }}" class="btn btn-primary">Start Tracking Free</a>
             <a href="#features" class="btn btn-secondary">See How It Works</a>
         </div>
         <div class="stats-bar">
             <div class="stat-item">
-                <div class="stat-value">10K+</div>
-                <div class="stat-label">Bets Tracked</div>
+                <div class="stat-value">Free</div>
+                <div class="stat-label">To Start</div>
             </div>
             <div class="stat-item">
-                <div class="stat-value">3</div>
-                <div class="stat-label">Sportsbooks</div>
+                <div class="stat-value">60s</div>
+                <div class="stat-label">Setup Time</div>
             </div>
             <div class="stat-item">
                 <div class="stat-value">100%</div>
@@ -691,11 +726,11 @@
     </section>
 
     <section class="platforms">
-        <p>Works with your favorite sportsbooks</p>
+        <p>Sync bets from your favorite platforms</p>
         <div class="platform-logos">
             <span>PrizePicks</span>
-            <span>FanDuel</span>
-            <span>DraftKings</span>
+            <span class="coming-soon">FanDuel <small>(Soon)</small></span>
+            <span class="coming-soon">DraftKings <small>(Soon)</small></span>
         </div>
     </section>
 
@@ -809,6 +844,7 @@
     <footer>
         <p>
             <a href="{{ url_for('privacy') }}">Privacy Policy</a> &middot;
+            <a href="{{ url_for('terms') }}">Terms of Service</a> &middot;
             LockTracker &copy; 2025
         </p>
     </footer>
