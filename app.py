@@ -515,8 +515,9 @@ def add_bet():
         }).execute()
     except Exception as e:
         print(f"Error adding bet: {e}")
+        return redirect(url_for('dashboard'))
 
-    return redirect(url_for('dashboard'))
+    return redirect(url_for('dashboard', bet_added='true'))
 
 @app.route('/update/<int:bet_id>', methods=['POST'])
 @login_required
@@ -537,6 +538,7 @@ def update_bet(bet_id):
                 'result': result,
                 'profit': profit
             }).eq('id', bet_id).eq('user_id', user['id']).execute()
+            return redirect(url_for('dashboard', bet_updated='true'))
     except Exception as e:
         print(f"Error updating bet: {e}")
 
@@ -550,10 +552,10 @@ def delete_bet(bet_id):
 
     try:
         supabase_admin.table('bets').delete().eq('id', bet_id).eq('user_id', user['id']).execute()
+        return redirect(url_for('dashboard', bet_deleted='true'))
     except Exception as e:
         print(f"Error deleting bet: {e}")
-
-    return redirect(url_for('dashboard'))
+        return redirect(url_for('dashboard'))
 
 @app.route('/edit/<int:bet_id>', methods=['GET', 'POST'])
 @login_required
@@ -592,7 +594,7 @@ def edit_bet(bet_id):
                 'profit': profit
             }).eq('id', bet_id).eq('user_id', user['id']).execute()
 
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('dashboard', bet_updated='true'))
 
         return render_template('edit_bet.html', bet=bet, user=user)
 
@@ -604,6 +606,11 @@ def edit_bet(bet_id):
 def terms():
     """Terms of Service page"""
     return render_template('terms.html')
+
+@app.route('/help')
+def help_page():
+    """Help and FAQ page"""
+    return render_template('help.html')
 
 # ==============================================
 # API ENDPOINTS (for browser extension)

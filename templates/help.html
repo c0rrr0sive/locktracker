@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help & FAQ - LockTracker</title>
+    <meta name="description" content="Get help with LockTracker. Find answers to frequently asked questions about tracking bets, syncing, and more.">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #050508;
+            --bg-glass: rgba(15, 15, 25, 0.6);
+            --bg-glass-light: rgba(30, 30, 50, 0.4);
+            --accent: #0ea5e9;
+            --accent-light: #38bdf8;
+            --accent-dark: #0284c7;
+            --accent-glow: rgba(14, 165, 233, 0.4);
+            --accent-subtle: rgba(14, 165, 233, 0.15);
+            --text-primary: #f0f0f5;
+            --text-secondary: #9898a8;
+            --text-muted: #5a5a6e;
+            --positive: #10b981;
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --border-accent: rgba(14, 165, 233, 0.3);
+            --blur-amount: 20px;
+            --radius: 12px;
+            --radius-lg: 20px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            background-image:
+                radial-gradient(ellipse 80% 60% at 50% 0%, rgba(14, 165, 233, 0.15), transparent),
+                radial-gradient(ellipse 50% 50% at 80% 80%, rgba(14, 165, 233, 0.08), transparent);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 40px 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--text-secondary);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--accent-light), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .faq-item {
+            background: var(--bg-glass);
+            backdrop-filter: blur(var(--blur-amount));
+            -webkit-backdrop-filter: blur(var(--blur-amount));
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 20px 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        .faq-question:hover {
+            background: var(--bg-glass-light);
+        }
+
+        .faq-question h3 {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .faq-icon {
+            color: var(--text-muted);
+            font-size: 1.25rem;
+            transition: transform 0.2s;
+        }
+
+        .faq-item.open .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 500px;
+        }
+
+        .faq-answer-content {
+            padding: 0 24px 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .faq-answer-content a {
+            color: var(--accent-light);
+            text-decoration: none;
+        }
+
+        .faq-answer-content a:hover {
+            text-decoration: underline;
+        }
+
+        .faq-answer-content ul {
+            margin: 12px 0;
+            padding-left: 20px;
+        }
+
+        .faq-answer-content li {
+            margin-bottom: 6px;
+        }
+
+        .contact-box {
+            background: var(--bg-glass);
+            backdrop-filter: blur(var(--blur-amount));
+            -webkit-backdrop-filter: blur(var(--blur-amount));
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            text-align: center;
+        }
+
+        .contact-box h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .contact-box p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .contact-email {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: var(--accent-subtle);
+            border: 1px solid var(--border-accent);
+            border-radius: var(--radius);
+            color: var(--accent-light);
+            font-size: 1rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .contact-email:hover {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 0 25px var(--accent-glow);
+        }
+
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .quick-link {
+            background: var(--bg-glass);
+            backdrop-filter: blur(var(--blur-amount));
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .quick-link:hover {
+            border-color: var(--border-accent);
+            transform: translateY(-2px);
+        }
+
+        .quick-link-icon {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+
+        .quick-link h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .quick-link p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 480px) {
+            .faq-question {
+                padding: 16px 18px;
+            }
+
+            .faq-answer-content {
+                padding: 0 18px 16px;
+            }
+
+            .contact-box {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{{ url_for('dashboard') if session.get('user') else url_for('home') }}" class="back-link">&larr; Back</a>
+
+        <div class="header">
+            <h1>Help & FAQ</h1>
+            <p>Find answers to common questions</p>
+        </div>
+
+        <div class="quick-links">
+            {% if session.get('user') %}
+            <a href="{{ url_for('onboarding') }}" class="quick-link">
+                <div class="quick-link-icon">&#128640;</div>
+                <h3>Getting Started</h3>
+                <p>New to LockTracker? Start here</p>
+            </a>
+            <a href="{{ url_for('settings') }}" class="quick-link">
+                <div class="quick-link-icon">&#9881;</div>
+                <h3>Account Settings</h3>
+                <p>Manage your account</p>
+            </a>
+            {% else %}
+            <a href="{{ url_for('signup') }}" class="quick-link">
+                <div class="quick-link-icon">&#128640;</div>
+                <h3>Get Started</h3>
+                <p>Create your free account</p>
+            </a>
+            <a href="{{ url_for('login') }}" class="quick-link">
+                <div class="quick-link-icon">&#128274;</div>
+                <h3>Sign In</h3>
+                <p>Access your dashboard</p>
+            </a>
+            {% endif %}
+            <a href="{{ url_for('pricing') }}" class="quick-link">
+                <div class="quick-link-icon">&#11088;</div>
+                <h3>Upgrade to Pro</h3>
+                <p>Get unlimited tracking</p>
+            </a>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Getting Started</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How do I start tracking my bets?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            There are two ways to track bets with LockTracker:
+                            <ul>
+                                <li><strong>Chrome Extension (Recommended):</strong> Install our extension and visit your sportsbook's bet history. Click the LockTracker button to automatically import all your bets.</li>
+                                <li><strong>Manual Entry:</strong> Use the "Log New Bet" form on your dashboard to manually add bets one at a time.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Which sportsbooks are supported?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Currently, our Chrome extension supports automatic syncing from:
+                            <ul>
+                                <li><strong>PrizePicks</strong> - Fully supported</li>
+                                <li><strong>FanDuel</strong> - Coming soon</li>
+                                <li><strong>DraftKings</strong> - Coming soon</li>
+                            </ul>
+                            You can manually log bets from any sportsbook using the dashboard form.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How do I install the Chrome extension?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            The Chrome extension is currently pending review on the Chrome Web Store. Once approved, you'll be able to install it with one click. We'll update this page and notify users when it's available.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Account & Billing</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What's included in the free plan?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            The free plan includes:
+                            <ul>
+                                <li>15 bet syncs per month</li>
+                                <li>Full dashboard with stats and analytics</li>
+                                <li>Manual bet entry (unlimited)</li>
+                                <li>CSV export of your data</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What do I get with Pro?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Pro ($9/month) includes everything in Free, plus:
+                            <ul>
+                                <li>Unlimited bet syncs</li>
+                                <li>Auto-sync when you visit your sportsbook</li>
+                                <li>Priority support</li>
+                                <li>Early access to new features</li>
+                            </ul>
+                            <a href="{{ url_for('pricing') }}">View pricing details &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How do I cancel my subscription?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            You can cancel anytime from your <a href="{{ url_for('settings') }}">Settings</a> page. Click "Manage" under Subscription to access the Stripe billing portal where you can cancel or update your payment method. You'll keep Pro access until the end of your billing period.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Can I delete my account?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Yes. Go to <a href="{{ url_for('settings') }}">Settings</a> and scroll to the "Danger Zone" section. Deleting your account will permanently remove all your data including bets, stats, and subscription. This action cannot be undone.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Data & Privacy</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Is my data private?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Yes. Your betting data is completely private and only visible to you. We never share, sell, or analyze your data for any purpose other than providing the service. Read our full <a href="{{ url_for('privacy') }}">Privacy Policy</a> for details.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Can I export my data?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Yes. Go to <a href="{{ url_for('settings') }}">Settings</a> and click "Export" to download all your bets as a CSV file. You can also import bets from a CSV file if you're coming from another tracking system.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Troubleshooting</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>My bets aren't syncing</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            If bets aren't syncing properly:
+                            <ul>
+                                <li>Make sure you're logged into LockTracker in the same browser</li>
+                                <li>Check that you're on the bet history page of your sportsbook</li>
+                                <li>Try refreshing the page and clicking sync again</li>
+                                <li>Check if you've hit your monthly sync limit (free plan: 15/month)</li>
+                            </ul>
+                            If issues persist, contact us below.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>I found a duplicate bet</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            We try to detect and prevent duplicate bets during sync, but occasionally duplicates may occur. You can delete any duplicate by clicking the "X" button on the bet card in your dashboard, or click "Edit" to modify the bet details.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-box">
+            <h2>Still need help?</h2>
+            <p>Can't find what you're looking for? Reach out and we'll get back to you as soon as possible.</p>
+            <a href="mailto:support@locktracker.app" class="contact-email">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                support@locktracker.app
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                const wasOpen = item.classList.contains('open');
+
+                // Close all items
+                document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+
+                // Open clicked item if it wasn't open
+                if (!wasOpen) {
+                    item.classList.add('open');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
