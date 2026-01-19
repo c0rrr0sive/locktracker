@@ -9,6 +9,14 @@
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
 
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#0ea5e9">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="LockTracker">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
+
     <!-- Open Graph / Social Sharing -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.url }}">
@@ -866,5 +874,16 @@
             LockTracker &copy; 2025
         </p>
     </footer>
+
+    <script>
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/static/sw.js')
+                .then(reg => console.log('SW registered'))
+                .catch(err => console.log('SW registration failed:', err));
+        });
+    }
+    </script>
 </body>
 </html>
