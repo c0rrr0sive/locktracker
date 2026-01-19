@@ -86,7 +86,8 @@ def signup():
                     'email': response.user.email
                 }
                 session['access_token'] = response.session.access_token
-                return redirect(url_for('dashboard'))
+                # Send new users to onboarding
+                return redirect(url_for('onboarding'))
             else:
                 return render_template('signup.html', error='Signup failed. Please try again.')
 
@@ -425,6 +426,12 @@ def landing():
     """Always show landing page (for previewing while logged in)"""
     return render_template('landing.html')
 
+@app.route('/onboarding')
+@login_required
+def onboarding():
+    """Onboarding page for new users"""
+    return render_template('onboarding.html')
+
 @app.route('/dashboard')
 @login_required
 def dashboard():
@@ -481,7 +488,7 @@ def add_bet():
     can_add, limit, current_count = can_add_bets(user['id'])
     if not can_add:
         # Redirect back with error (could use flash messages for better UX)
-        return redirect(url_for('index', error='limit_reached'))
+        return redirect(url_for('dashboard', error='limit_reached'))
 
     date = request.form.get('date', datetime.now().strftime('%Y-%m-%d'))
     sport = request.form['sport']
@@ -1164,6 +1171,20 @@ def delete_account():
 def account_deleted():
     """Confirmation page after account deletion"""
     return render_template('account_deleted.html')
+
+# ==============================================
+# ERROR HANDLERS
+# ==============================================
+
+@app.errorhandler(404)
+def page_not_found(e):
+    """Handle 404 errors"""
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    """Handle 500 errors"""
+    return render_template('500.html'), 500
 
 @app.route('/export-data')
 @login_required

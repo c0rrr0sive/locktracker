@@ -4,6 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LockTracker - Know Your Edge</title>
+    <meta name="description" content="Track your sports bets, analyze your performance, and find your edge. Auto-sync from PrizePicks, FanDuel, and DraftKings. Free to start.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="LockTracker - Know Your Edge">
+    <meta property="og:description" content="Track your sports bets, analyze your performance, and find your edge. Auto-sync from PrizePicks, FanDuel, and DraftKings.">
+    <meta property="og:image" content="{{ url_for('static', filename='images/LockTracker logo with growth arrow.png', _external=True) }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="LockTracker - Know Your Edge">
+    <meta name="twitter:description" content="Track your sports bets, analyze your performance, and find your edge.">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
