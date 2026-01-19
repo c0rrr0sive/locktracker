@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LockTracker - Know Your Edge</title>
-    <meta name="description" content="Track your sports bets, analyze your performance, and find your edge. Auto-sync from PrizePicks, FanDuel, and DraftKings. Free to start.">
+    <meta name="description" content="Are you actually profitable? LockTracker auto-syncs your PrizePicks bets and shows you exactly where your money is going. Free to start.">
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
@@ -20,14 +20,14 @@
     <!-- Open Graph / Social Sharing -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.url }}">
-    <meta property="og:title" content="LockTracker - Know Your Edge">
-    <meta property="og:description" content="Track your sports bets, analyze your performance, and find your edge. Auto-sync from PrizePicks, FanDuel, and DraftKings.">
+    <meta property="og:title" content="LockTracker - Are You Actually Profitable?">
+    <meta property="og:description" content="Auto-sync your PrizePicks bets and see exactly where your money is going. Free bet tracking for smart bettors.">
     <meta property="og:image" content="{{ url_for('static', filename='images/LockTracker logo with growth arrow.png', _external=True) }}">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="LockTracker - Know Your Edge">
-    <meta name="twitter:description" content="Track your sports bets, analyze your performance, and find your edge.">
+    <meta name="twitter:title" content="LockTracker - Are You Actually Profitable?">
+    <meta name="twitter:description" content="Auto-sync your PrizePicks bets and see exactly where your money is going. Free.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -488,6 +488,85 @@
             font-size: 0.9rem;
         }
 
+        /* Screenshots Section */
+        .screenshots {
+            padding: 120px 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .screenshot-showcase {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .screenshot-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(var(--blur-amount));
+            -webkit-backdrop-filter: blur(var(--blur-amount));
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .screenshot-card:hover {
+            border-color: var(--border-accent);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .screenshot-card.main {
+            width: 100%;
+        }
+
+        .screenshot-label {
+            padding: 16px 24px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .screenshot-placeholder {
+            padding: 80px 40px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .screenshot-placeholder p {
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        .screenshot-placeholder small {
+            font-size: 0.85rem;
+        }
+
+        .screenshot-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .screenshot-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .screenshot-row {
+                grid-template-columns: 1fr;
+            }
+
+            .screenshot-placeholder {
+                padding: 60px 24px;
+            }
+        }
+
         /* Pricing Section */
         .pricing {
             padding: 120px 20px;
@@ -728,20 +807,20 @@
         <div class="hero-logo">
             <img src="{{ url_for('static', filename='images/LockTracker logo with growth arrow.png') }}" alt="LockTracker">
         </div>
-        <h1>Stop guessing.<br><span class="gradient">Know your edge.</span></h1>
-        <p>Track every bet. See what's actually working. Make smarter plays backed by your real data — not hunches.</p>
+        <h1>Are you actually<br><span class="gradient">profitable?</span></h1>
+        <p>Most bettors don't know if they're winning or losing. LockTracker syncs your PrizePicks bets automatically and shows you exactly where your money is going.</p>
         <div class="hero-buttons">
             <a href="{{ url_for('signup') }}" class="btn btn-primary">Start Tracking Free</a>
-            <a href="#features" class="btn btn-secondary">See How It Works</a>
+            <a href="#screenshots" class="btn btn-secondary">See It In Action</a>
         </div>
         <div class="stats-bar">
             <div class="stat-item">
                 <div class="stat-value">Free</div>
-                <div class="stat-label">To Start</div>
+                <div class="stat-label">Forever Plan</div>
             </div>
             <div class="stat-item">
-                <div class="stat-value">60s</div>
-                <div class="stat-label">Setup Time</div>
+                <div class="stat-value">1-Click</div>
+                <div class="stat-label">Bet Import</div>
             </div>
             <div class="stat-item">
                 <div class="stat-value">100%</div>
@@ -761,39 +840,39 @@
 
     <section class="features" id="features">
         <div class="section-header">
-            <h2>Everything you need to track smarter</h2>
-            <p>Built by bettors, for bettors. Every feature designed to give you an edge.</p>
+            <h2>Stop losing money blindly</h2>
+            <p>Know exactly which bets make you money and which ones drain your bankroll.</p>
         </div>
         <div class="features-grid">
             <div class="feature-card">
                 <div class="feature-icon">&#9889;</div>
-                <h3>One-Click Sync</h3>
-                <p>Import your entire bet history in seconds. No manual entry, no spreadsheets.</p>
+                <h3>No More Spreadsheets</h3>
+                <p>One click imports all your PrizePicks bets. Your entire history in seconds, not hours.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">&#128200;</div>
-                <h3>Real Stats That Matter</h3>
-                <p>See your true win rate, ROI, and profit. Break it down by sport or bet type.</p>
+                <h3>See Your Real Numbers</h3>
+                <p>Your actual win rate, ROI, and total profit — not what you think it is. The truth hurts (or helps).</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">&#127919;</div>
-                <h3>Find Your Edge</h3>
-                <p>Discover which bets are profitable. Double down on what works.</p>
+                <h3>Find What's Working</h3>
+                <p>Are NBA props profitable for you? Is soccer killing your bankroll? Now you'll know for sure.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">&#128274;</div>
-                <h3>Private & Secure</h3>
-                <p>Your data is encrypted and never shared. Only you see your history.</p>
+                <h3>Your Data Stays Yours</h3>
+                <p>Encrypted and private. We never see your bets, never sell your data. Period.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">&#128640;</div>
-                <h3>Auto-Sync (Pro)</h3>
-                <p>Set it and forget it. Bets sync automatically when you visit your sportsbook.</p>
+                <h3>Set It & Forget It</h3>
+                <p>Pro users get auto-sync — visit PrizePicks and your bets import automatically.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">&#128241;</div>
-                <h3>Works Everywhere</h3>
-                <p>Chrome extension syncs your bets. Dashboard works on any device.</p>
+                <h3>Check From Anywhere</h3>
+                <p>Beautiful dashboard that works on your phone, tablet, or desktop. Your stats follow you.</p>
             </div>
         </div>
     </section>
@@ -811,13 +890,36 @@
             </div>
             <div class="step">
                 <div class="step-number">2</div>
-                <h3>Visit Your Sportsbook</h3>
-                <p>Go to your bet history on PrizePicks, FanDuel, or DraftKings.</p>
+                <h3>Visit PrizePicks</h3>
+                <p>Go to your bet history on PrizePicks.</p>
             </div>
             <div class="step">
                 <div class="step-number">3</div>
                 <h3>Click Sync</h3>
                 <p>One click imports all your bets. That's it.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="screenshots" id="screenshots">
+        <div class="section-header">
+            <h2>See your betting data like never before</h2>
+            <p>Beautiful analytics that help you make smarter decisions</p>
+        </div>
+        <div class="screenshot-showcase">
+            <div class="screenshot-card main">
+                <div class="screenshot-label">Dashboard Overview</div>
+                <img src="{{ url_for('static', filename='images/screenshot-dashboard.png') }}" alt="LockTracker Dashboard - Your stats, profit, and win rate at a glance">
+            </div>
+            <div class="screenshot-row">
+                <div class="screenshot-card">
+                    <div class="screenshot-label">Analytics Charts</div>
+                    <img src="{{ url_for('static', filename='images/screenshot-analytics.png') }}" alt="LockTracker Analytics - Profit over time, by sport, by bet type">
+                </div>
+                <div class="screenshot-card">
+                    <div class="screenshot-label">Bet History</div>
+                    <img src="{{ url_for('static', filename='images/screenshot-history.png') }}" alt="LockTracker Bet History - Every bet tracked with full details">
+                </div>
             </div>
         </div>
     </section>
@@ -861,9 +963,9 @@
     </section>
 
     <section class="cta">
-        <h2>Ready to know your edge?</h2>
-        <p>Join smart bettors who track their performance with LockTracker.</p>
-        <a href="{{ url_for('signup') }}" class="btn btn-primary" style="padding: 18px 36px; font-size: 1rem;">Start Tracking Free</a>
+        <h2>Stop guessing. Start knowing.</h2>
+        <p>The first step to betting smarter is knowing where you actually stand. It's free to find out.</p>
+        <a href="{{ url_for('signup') }}" class="btn btn-primary" style="padding: 18px 36px; font-size: 1rem;">Create Free Account</a>
     </section>
 
     <footer>

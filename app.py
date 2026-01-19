@@ -875,11 +875,12 @@ def api_analytics():
 # ==============================================
 
 @app.route('/pricing')
-@login_required
 def pricing():
-    """Pricing page"""
+    """Pricing page - accessible to all, shows upgrade options"""
     user = get_current_user()
-    tier = get_user_tier(user['id'])
+    tier = 'free'
+    if user:
+        tier = get_user_tier(user['id'])
     return render_template('pricing.html', user=user, tier=tier)
 
 @app.route('/privacy')

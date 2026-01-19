@@ -346,10 +346,12 @@
                 <form action="{{ url_for('manage_subscription') }}" method="GET">
                     <button type="submit" class="pricing-btn secondary">Manage Subscription</button>
                 </form>
-                {% else %}
+                {% elif user %}
                 <form action="{{ url_for('create_checkout_session') }}" method="POST">
                     <button type="submit" class="pricing-btn primary">Upgrade to Pro</button>
                 </form>
+                {% else %}
+                <a href="{{ url_for('login') }}" class="pricing-btn primary" style="display: block; text-align: center; text-decoration: none;">Sign Up to Get Pro</a>
                 {% endif %}
             </div>
         </div>
@@ -359,7 +361,11 @@
             <p>Not happy with Pro? Contact us within 30 days for a full refund.</p>
         </div>
 
+        {% if user %}
         <a href="{{ url_for('dashboard') }}" class="back-link">&larr; Back to Dashboard</a>
+        {% else %}
+        <a href="{{ url_for('landing') }}" class="back-link">&larr; Back to Home</a>
+        {% endif %}
     </div>
 </body>
 </html>
