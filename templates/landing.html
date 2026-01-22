@@ -216,10 +216,32 @@
             font-weight: 600;
         }
 
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
         .hero-logo {
             margin-bottom: 32px;
             position: relative;
             z-index: 1;
+            animation: fadeInUp 0.8s ease-out, float 4s ease-in-out 1s infinite;
         }
 
         .hero-logo img {
@@ -236,6 +258,7 @@
             max-width: 800px;
             position: relative;
             z-index: 1;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
         }
 
         .hero h1 .gradient {
@@ -253,6 +276,7 @@
             line-height: 1.7;
             position: relative;
             z-index: 1;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
         }
 
         .hero-buttons {
@@ -262,11 +286,21 @@
             justify-content: center;
             position: relative;
             z-index: 1;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
         }
 
         .hero-buttons .btn {
             padding: 16px 32px;
             font-size: 0.95rem;
+        }
+
+        .trust-badge {
+            margin-top: 16px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.8s ease-out 0.7s both;
         }
 
         /* Stats Bar */
@@ -279,6 +313,7 @@
             border-top: 1px solid var(--border-glass);
             position: relative;
             z-index: 1;
+            animation: fadeInUp 0.8s ease-out 0.8s both;
         }
 
         .stat-item {
@@ -727,6 +762,81 @@
             z-index: 1;
         }
 
+        /* FAQ Section */
+        .faq {
+            padding: 120px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .faq-item {
+            background: var(--bg-glass);
+            backdrop-filter: blur(var(--blur-amount));
+            -webkit-backdrop-filter: blur(var(--blur-amount));
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .faq-item.open {
+            border-color: var(--border-accent);
+        }
+
+        .faq-question {
+            width: 100%;
+            padding: 20px 24px;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 500;
+            font-family: inherit;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .faq-icon {
+            color: var(--accent-light);
+            font-size: 1.25rem;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.open .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 200px;
+        }
+
+        .faq-answer p {
+            padding: 0 24px 20px;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
         /* Footer */
         footer {
             padding: 40px 20px;
@@ -759,6 +869,10 @@
                 display: none;
             }
 
+            .hero-logo img {
+                height: 200px;
+            }
+
             .stats-bar {
                 gap: 32px;
             }
@@ -787,6 +901,30 @@
             .step {
                 max-width: 100%;
             }
+
+            .platform-logos {
+                gap: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-bar {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .hero-logo img {
+                height: 150px;
+            }
+
+            .platform-logos {
+                gap: 16px;
+            }
+
+            .platform-logos span {
+                font-size: 0.9rem;
+                padding: 8px 16px;
+            }
         }
     </style>
 </head>
@@ -813,6 +951,7 @@
             <a href="{{ url_for('signup') }}" class="btn btn-primary">Start Tracking Free</a>
             <a href="#screenshots" class="btn btn-secondary">See It In Action</a>
         </div>
+        <p class="trust-badge">No credit card required</p>
         <div class="stats-bar">
             <div class="stat-item">
                 <div class="stat-value">Free</div>
@@ -966,6 +1105,69 @@
         <h2>Stop guessing. Start knowing.</h2>
         <p>The first step to betting smarter is knowing where you actually stand. It's free to find out.</p>
         <a href="{{ url_for('signup') }}" class="btn btn-primary" style="padding: 18px 36px; font-size: 1rem;">Create Free Account</a>
+    </section>
+
+    <section class="faq" id="faq">
+        <div class="section-header">
+            <h2>Frequently Asked Questions</h2>
+            <p>Got questions? We've got answers.</p>
+        </div>
+        <div class="faq-list">
+            <div class="faq-item">
+                <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                    Is LockTracker safe to use with PrizePicks?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Yes. LockTracker only reads your bet history from the page — it never accesses your login credentials or makes any actions on your behalf. It's read-only and runs entirely in your browser.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                    How does the Chrome extension work?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>When you visit your bet history on PrizePicks, the extension reads the bets displayed on the page and sends them to your LockTracker dashboard. You control when to sync — just click the extension icon.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                    Can I use LockTracker without the extension?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Yes! You can manually log bets directly in the dashboard. The extension just makes it faster by auto-importing your history.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                    Is my betting data private?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Absolutely. Your data is encrypted and stored securely. We never share, sell, or analyze your betting data. Only you can see your stats.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                    What's the difference between Free and Pro?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Free gives you 15 bet syncs per month with manual sync. Pro gives you unlimited syncs with auto-sync (bets import automatically when you visit PrizePicks) plus advanced analytics.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                    Can I cancel anytime?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Yes. No contracts, no commitments. Cancel your Pro subscription anytime from your account settings.</p>
+                </div>
+            </div>
+        </div>
     </section>
 
     <footer>

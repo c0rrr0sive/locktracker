@@ -272,7 +272,7 @@
                             <button type="submit" class="btn btn-push">Push</button>
                         </form>
                         <a href="{{ url_for('edit_bet', bet_id=bet.id) }}" class="btn btn-edit">Edit</a>
-                        <form action="/delete/{{ bet.id }}" method="POST" class="inline-form">
+                        <form action="/delete/{{ bet.id }}" method="POST" class="inline-form" onsubmit="return confirm('Delete this bet? This cannot be undone.')">
                             <button type="submit" class="btn btn-delete">×</button>
                         </form>
                     </div>
@@ -285,7 +285,7 @@
         <!-- Bet History -->
         <section class="bets-section">
             <div class="bets-header">
-                <h2>Bet History</h2>
+                <h2>Bet History <span class="filter-count" id="filter-count"></span></h2>
                 <div class="bet-filters">
                     <select id="filter-sport" class="filter-select">
                         <option value="">All Sports</option>
@@ -333,7 +333,7 @@
                     </div>
                     <div class="bet-card-actions">
                         <a href="{{ url_for('edit_bet', bet_id=bet.id) }}" class="btn btn-edit">Edit</a>
-                        <form action="/delete/{{ bet.id }}" method="POST" class="inline-form">
+                        <form action="/delete/{{ bet.id }}" method="POST" class="inline-form" onsubmit="return confirm('Delete this bet? This cannot be undone.')">
                             <button type="submit" class="btn btn-delete">×</button>
                         </form>
                     </div>
@@ -343,7 +343,11 @@
             </div>
             {% else %}
             <div class="bets-list">
-                <p class="no-bets">No bets logged yet. Add your first bet above!</p>
+                <div class="empty-state">
+                    <div class="empty-state-icon">&#128202;</div>
+                    <h3>No bets logged yet</h3>
+                    <p>Add your first bet above or install the Chrome extension to sync from PrizePicks.</p>
+                </div>
             </div>
             {% endif %}
         </section>
@@ -468,6 +472,7 @@
         const filterResult = document.getElementById('filter-result');
         const filterSportsbook = document.getElementById('filter-sportsbook');
         const betsList = document.getElementById('bets-list');
+        const filterCount = document.getElementById('filter-count');
 
         function applyFilters() {
             if (!betsList) return;
@@ -477,6 +482,9 @@
             const sportsbook = filterSportsbook.value;
 
             const cards = betsList.querySelectorAll('.bet-card');
+            let visibleCount = 0;
+            const totalCount = cards.length;
+
             cards.forEach(card => {
                 const cardSport = card.dataset.sport;
                 const cardResult = card.dataset.result;
@@ -486,13 +494,57 @@
                 const matchResult = !result || cardResult === result;
                 const matchSportsbook = !sportsbook || cardSportsbook === sportsbook;
 
-                card.style.display = (matchSport && matchResult && matchSportsbook) ? '' : 'none';
+                const isVisible = matchSport && matchResult && matchSportsbook;
+                card.style.display = isVisible ? '' : 'none';
+                if (isVisible) visibleCount++;
             });
+
+            // Update filter count
+            if (filterCount) {
+                if (sport || result || sportsbook) {
+                    filterCount.textContent = `(${visibleCount} of ${totalCount})`;
+                } else {
+                    filterCount.textContent = totalCount > 0 ? `(${totalCount})` : '';
+                }
+            }
         }
 
         if (filterSport) filterSport.addEventListener('change', applyFilters);
         if (filterResult) filterResult.addEventListener('change', applyFilters);
         if (filterSportsbook) filterSportsbook.addEventListener('change', applyFilters);
+
+        // Show initial count
+        applyFilters();
+    });
+    </script>
+
+    <script>
+    // Button Loading States
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add loading state to Win/Loss/Push buttons
+        document.querySelectorAll('.btn-win, .btn-loss, .btn-push').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                // Prevent double-clicks
+                if (this.classList.contains('loading')) {
+                    e.preventDefault();
+                    return;
+                }
+                this.classList.add('loading');
+                this.disabled = true;
+            });
+        });
+
+        // Add loading state to Add Bet button
+        const addBetForm = document.querySelector('.bet-form');
+        if (addBetForm) {
+            addBetForm.addEventListener('submit', function() {
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.classList.add('loading');
+                    submitBtn.disabled = true;
+                }
+            });
+        }
     });
     </script>
 

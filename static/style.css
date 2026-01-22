@@ -673,6 +673,11 @@ header {
     margin: 0;
 }
 
+.filter-count {
+    font-weight: 400;
+    color: var(--text-secondary);
+}
+
 .bet-filters {
     display: flex;
     gap: 10px;
@@ -869,6 +874,31 @@ header {
     color: var(--text-muted);
     padding: 50px 24px;
     font-size: 0.9rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 24px;
+}
+
+.empty-state-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    opacity: 0.6;
+}
+
+.empty-state h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.empty-state p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    max-width: 300px;
+    margin: 0 auto;
 }
 
 /* ============================================
