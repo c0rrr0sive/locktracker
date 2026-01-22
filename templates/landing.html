@@ -39,6 +39,10 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         :root {
             --bg-primary: #050508;
             --bg-secondary: #0a0a0f;
@@ -448,6 +452,12 @@
             padding: 12px;
             background: var(--accent-subtle);
             border-radius: var(--radius);
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1);
+            background: var(--accent);
         }
 
         .feature-card h3 {

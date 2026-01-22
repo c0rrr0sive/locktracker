@@ -70,8 +70,11 @@ def get_current_user():
 def signup():
     """Sign up page"""
     if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '')
+
+        if not email or not password:
+            return render_template('signup.html', error='Email and password are required.')
 
         try:
             response = supabase.auth.sign_up({
@@ -103,8 +106,11 @@ def signup():
 def login():
     """Login page"""
     if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '')
+
+        if not email or not password:
+            return render_template('login.html', error='Email and password are required.')
 
         try:
             response = supabase.auth.sign_in_with_password({
@@ -141,7 +147,10 @@ def logout():
 def forgot_password():
     """Forgot password page - sends reset email"""
     if request.method == 'POST':
-        email = request.form['email']
+        email = request.form.get('email', '').strip()
+
+        if not email:
+            return render_template('forgot_password.html', error='Email is required.')
 
         try:
             # Get the base URL for the reset link
@@ -491,13 +500,22 @@ def add_bet():
         return redirect(url_for('dashboard', error='limit_reached'))
 
     date = request.form.get('date', datetime.now().strftime('%Y-%m-%d'))
-    sport = request.form['sport']
-    matchup = request.form['matchup']
-    bet_type = request.form['bet_type']
-    bet_description = request.form['bet_description']
-    odds = int(request.form['odds'])
-    amount = float(request.form['amount'])
+    sport = request.form.get('sport', '')
+    matchup = request.form.get('matchup', '')
+    bet_type = request.form.get('bet_type', '')
+    bet_description = request.form.get('bet_description', '')
     sportsbook = request.form.get('sportsbook', '')
+
+    # Validate required fields
+    if not sport or not matchup or not bet_description:
+        return redirect(url_for('dashboard', error='missing_fields'))
+
+    # Validate and convert numeric fields
+    try:
+        odds = int(request.form.get('odds', 0))
+        amount = float(request.form.get('amount', 0))
+    except (ValueError, TypeError):
+        return redirect(url_for('dashboard', error='invalid_numbers'))
 
     try:
         supabase_admin.table('bets').insert({
@@ -524,7 +542,12 @@ def add_bet():
 def update_bet(bet_id):
     """Update a bet's result"""
     user = get_current_user()
-    result = request.form['result']
+    result = request.form.get('result', '')
+
+    # Validate result value
+    valid_results = ['pending', 'win', 'loss', 'push']
+    if result not in valid_results:
+        return redirect(url_for('dashboard'))
 
     try:
         # Get the bet first
@@ -620,7 +643,10 @@ def help_page():
 def import_bets():
     """Import bets from the browser extension"""
     try:
-        data = request.get_json()
+        data = request.get_json(silent=True)
+        if not data:
+            return jsonify({'success': False, 'error': 'Invalid request body'})
+
         bets = data.get('bets', [])
         user_token = data.get('access_token')  # Extension sends user's token
 
@@ -746,7 +772,10 @@ def api_stats():
 def api_usage():
     """Get user's usage info (for extension to know remaining bets)"""
     try:
-        data = request.get_json()
+        data = request.get_json(silent=True)
+        if not data:
+            return jsonify({'success': False, 'error': 'Invalid request body'})
+
         user_token = data.get('access_token')
 
         if not user_token:

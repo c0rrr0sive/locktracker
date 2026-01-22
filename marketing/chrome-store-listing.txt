@@ -1,0 +1,93 @@
+================================================================================
+CHROME WEB STORE LISTING - LOCKTRACKER
+================================================================================
+
+APP NAME:
+LockTracker - PrizePicks Bet Tracker
+
+--------------------------------------------------------------------------------
+SHORT DESCRIPTION (132 characters max):
+--------------------------------------------------------------------------------
+Track your PrizePicks bets automatically. See your real win rate, ROI, and profit. Know if you're actually winning.
+
+(131 characters)
+
+--------------------------------------------------------------------------------
+DETAILED DESCRIPTION:
+--------------------------------------------------------------------------------
+Are you actually profitable on PrizePicks? Most bettors don't know.
+
+LockTracker automatically imports your PrizePicks bet history and shows you exactly where your money is going. No more spreadsheets. No more guessing.
+
+HOW IT WORKS:
+1. Install this extension
+2. Visit your PrizePicks bet history
+3. Click "Sync" to import your bets
+4. See your real stats on your dashboard
+
+FEATURES:
+- One-click bet import from PrizePicks
+- See your true win rate and ROI
+- Track profit by sport (NBA, NFL, MLB, etc.)
+- Beautiful analytics and charts
+- Works on any device
+- Your data is private and encrypted
+
+FREE PLAN INCLUDES:
+- 15 bet syncs per month
+- Full stats dashboard
+- All sportsbooks supported
+
+PRO PLAN ($9/month):
+- Unlimited syncs
+- Auto-sync (bets import automatically)
+- Advanced analytics
+- Priority support
+
+WHY LOCKTRACKER?
+- We NEVER access your login or password
+- Read-only - we only see your bet history
+- Your data is encrypted and private
+- Built by bettors, for bettors
+
+Stop guessing. Start knowing. Track your edge with LockTracker.
+
+Questions? Visit https://locktracker.app/help
+
+--------------------------------------------------------------------------------
+CATEGORY:
+--------------------------------------------------------------------------------
+Productivity (or Sports if available)
+
+--------------------------------------------------------------------------------
+LANGUAGE:
+--------------------------------------------------------------------------------
+English
+
+--------------------------------------------------------------------------------
+SCREENSHOTS NEEDED (1280x800 or 640x400):
+--------------------------------------------------------------------------------
+1. Extension popup showing "Sync Bets" button on PrizePicks page
+2. Dashboard overview with stats (profit, win rate, ROI)
+3. Analytics charts section
+4. Bet history list
+
+--------------------------------------------------------------------------------
+PROMOTIONAL IMAGES:
+--------------------------------------------------------------------------------
+Small tile (440x280): LockTracker logo + "Track Your PrizePicks Bets"
+Large tile (920x680): Dashboard screenshot with key stats highlighted
+Marquee (1400x560): "Are you actually profitable?" headline + dashboard preview
+
+--------------------------------------------------------------------------------
+PRIVACY POLICY URL:
+--------------------------------------------------------------------------------
+https://locktracker.app/privacy
+
+--------------------------------------------------------------------------------
+ADDITIONAL NOTES FOR REVIEW:
+--------------------------------------------------------------------------------
+- This extension reads bet history from PrizePicks.com to help users track their betting performance
+- No login credentials are accessed or stored
+- Data is sent securely to user's personal dashboard at locktracker.app
+- User must have a LockTracker account to use the sync feature

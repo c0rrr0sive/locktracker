@@ -1,0 +1,150 @@
+================================================================================
+REDDIT LAUNCH POST - LOCKTRACKER
+================================================================================
+
+RECOMMENDED SUBREDDITS (in order of relevance):
+--------------------------------------------------------------------------------
+1. r/PrizePicks (MOST IMPORTANT - your target users are here)
+   - 50k+ members, very active
+   - Post during peak hours (evenings EST, weekends)
+   - Engage genuinely before posting
+
+2. r/sportsbetting
+   - 200k+ members
+   - More general but lots of prop bettors
+
+3. r/sportsbook
+   - 700k+ members
+   - Serious bettors, might appreciate analytics angle
+
+4. r/dfsports (Daily Fantasy Sports)
+   - Overlaps with PrizePicks users
+
+5. r/SideProject or r/EntrepreneurRideAlong
+   - Good for "I built this" story angle
+   - Tech/startup crowd appreciates indie projects
+
+--------------------------------------------------------------------------------
+POST TITLE OPTIONS (pick one):
+--------------------------------------------------------------------------------
+Option A (Story angle - RECOMMENDED):
+"I built a free tool to track my PrizePicks bets after realizing I had no idea if I was actually profitable"
+
+Option B (Direct):
+"Free Chrome extension to automatically track your PrizePicks bets and see your real stats"
+
+Option C (Question hook):
+"Do you actually know your win rate on PrizePicks? I built something to find out"
+
+--------------------------------------------------------------------------------
+POST BODY (for r/PrizePicks):
+--------------------------------------------------------------------------------
+Hey everyone,
+
+I've been playing PrizePicks for about a year and realized something embarrassing - I had no idea if I was actually up or down overall. I'd win some, lose some, but never tracked it properly.
+
+I tried using spreadsheets but honestly I'd forget to update them after a few days. So I built a tool to do it automatically.
+
+**What it does:**
+- Chrome extension that reads your bet history from PrizePicks
+- One click imports all your bets to a dashboard
+- Shows your actual win rate, ROI, and total profit/loss
+- Breaks down your stats by sport so you can see what's working
+
+**It's free** (15 syncs/month on free plan, unlimited on Pro for $9/mo).
+
+**What it's NOT:**
+- It doesn't access your login or make bets for you
+- It just reads the bet history page and saves your data
+- Your info stays private
+
+I built this for myself but figured others might find it useful. Would love feedback if anyone tries it.
+
+Link: [locktracker.app](https://locktracker.app)
+Chrome extension: [link when approved]
+
+Happy to answer any questions!
+
+--------------------------------------------------------------------------------
+POST BODY (for r/sportsbook - more analytical angle):
+--------------------------------------------------------------------------------
+Built a free tool to track betting performance automatically
+
+Got tired of maintaining spreadsheets to track my props on PrizePicks, so I built a Chrome extension that imports bet history automatically.
+
+**Features:**
+- Auto-imports from PrizePicks (FanDuel/DraftKings coming soon)
+- Tracks win rate, ROI, units won/lost
+- Analytics by sport, bet type
+- All data is private/encrypted
+
+Free tier gets 15 syncs/month. Been using it for my own tracking and it's been eye-opening to see actual numbers vs what I thought my record was.
+
+Link if anyone wants to try: locktracker.app
+
+Feedback welcome - still adding features.
+
+--------------------------------------------------------------------------------
+POST BODY (for r/SideProject - builder angle):
+--------------------------------------------------------------------------------
+I built a bet tracking app because I was too lazy to use spreadsheets
+
+**The problem:** I bet on PrizePicks (sports props) but never actually knew if I was profitable. Spreadsheets lasted about 3 days before I stopped updating them.
+
+**The solution:** Chrome extension that reads your bet history and syncs it to a dashboard automatically.
+
+**Tech stack:**
+- Flask backend
+- Supabase (Postgres + Auth)
+- Vanilla JS frontend (no framework, keeping it simple)
+- Chrome extension with content scripts
+- Deployed on Railway
+
+**Business model:**
+- Free tier: 15 syncs/month
+- Pro: $9/month for unlimited + auto-sync
+- Stripe for payments
+
+**Current status:**
+- Live at locktracker.app
+- Extension pending Chrome Web Store review
+- ~0 users (just launched)
+
+Would love feedback from anyone who bets on sports or has built similar tracking tools.
+
+--------------------------------------------------------------------------------
+TIPS FOR POSTING:
+--------------------------------------------------------------------------------
+1. DON'T post and disappear - respond to every comment
+2. DON'T be defensive about criticism
+3. DO ask for feedback genuinely
+4. DO share your actual betting data/screenshots (blur sensitive info)
+5. DO engage in the subreddit before posting (comment on other posts first)
+6. POST during peak hours:
+   - Weekday evenings (6-9pm EST)
+   - Weekend afternoons
+   - Before major sporting events
+7. If post gets removed, message mods politely - some subs have rules about self-promo
+
+--------------------------------------------------------------------------------
+FOLLOW-UP CONTENT IDEAS:
+--------------------------------------------------------------------------------
+- "After tracking 100 bets, here's what I learned about my betting patterns"
+- "My PrizePicks stats after 1 month of tracking (spoiler: I'm not as good as I thought)"
+- Share interesting insights from your own data
+- Answer questions others have about tracking
+
+--------------------------------------------------------------------------------
+COMMENTS TO PREPARE FOR:
+--------------------------------------------------------------------------------
+Q: "Is this safe? Will PrizePicks ban me?"
+A: "It just reads the page like you do - doesn't automate anything or violate ToS. It's the same as copying your bets to a spreadsheet, just automated."
+
+Q: "Why would I pay when I can use a spreadsheet?"
+A: "You probably won't update a spreadsheet consistently (I didn't). The free tier is enough for casual tracking. Pro is for people who bet frequently and want auto-sync."
+
+Q: "How do I know you won't steal my data?"
+A: "The extension never sees your password. It only reads the bet history page after you're already logged in. All data is encrypted. Check the privacy policy."
+
+Q: "When is FanDuel/DraftKings coming?"
+A: "Working on it - need to build the parsers for their bet history pages. PrizePicks was first because that's what I use."
